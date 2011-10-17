@@ -36,6 +36,8 @@ In order to use the deletion feature, one must add the mapping by hand
 
 ``` js
 { "keys": ["ctrl+shift+t"], "command": "delete_trailing_spaces" }
+
+Here, pressing Ctrl + Shift + t will delete all trailing spaces.
 ```
 
 ### Change the highlighting color
@@ -54,7 +56,7 @@ how to do it.
 ### Disabling highlighting for large files
 
 Highlighting may be disabled for large files. The default threshold is around
-1 Mo. This is configurable (in "File Settings - User"); unit is number of chars:
+1M chars. This is configurable (in "File Settings - User"); unit is number of chars:
 
 ``` js
 { "trailing_spaces_file_max_size": 1000}
