@@ -2,7 +2,7 @@
 
 This is a [Sublime Text 2](http://www.sublimetext.com/2) plugin.
 
-**Highlight trailing spaces and provide a command to delete them.**
+**Highlight trailing spaces and delete them in a flash.**
 
 ST2 provides a way to automatically delete trailing spaces upon file save.
 Depending on your settings, it may be more handy to just highlight them and/or
