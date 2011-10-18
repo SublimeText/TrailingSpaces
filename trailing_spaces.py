@@ -21,7 +21,7 @@ import sublime, sublime_plugin
 
 DEFAULT_MAX_FILE_SIZE    = 1048576
 DEFAULT_COLOR_SCOPE_NAME = "invalid"
-DEFAULT_IS_ENABLED       = False
+DEFAULT_IS_ENABLED       = True
 
 #Set whether the plugin is on or off
 TrailingSpacesEnabled = DEFAULT_IS_ENABLED
