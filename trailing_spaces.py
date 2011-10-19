@@ -17,18 +17,21 @@ Config summary (see README.md for details):
 @since: 2011-02-25
 '''
 
-import sublime, sublime_plugin
+import sublime
+import sublime_plugin
 
-DEFAULT_MAX_FILE_SIZE    = 1048576
+DEFAULT_MAX_FILE_SIZE = 1048576
 DEFAULT_COLOR_SCOPE_NAME = "invalid"
-DEFAULT_IS_ENABLED       = True
+DEFAULT_IS_ENABLED = True
 
 #Set whether the plugin is on or off
 TrailingSpacesEnabled = DEFAULT_IS_ENABLED
 
+
 # Return an array of regions matching trailing spaces.
 def find_trailing_spaces(view):
     return view.find_all('[ \t]+$')
+
 
 # Highlight trailing spaces
 def highlight_trailing_spaces(view):
@@ -42,36 +45,41 @@ def highlight_trailing_spaces(view):
                          regions, color_scope_name,
                          sublime.DRAW_EMPTY)
 
+
 # Clear all trailing spaces
 def clear_trailing_spaces_highlight(window):
     for view in window.views():
         view.erase_regions('TrailingSpacesHighlightListener')
 
+
 # Toggle the event listner on or off
 class ToggleTrailingSpacesCommand(sublime_plugin.WindowCommand):
     def run(self):
         global TrailingSpacesEnabled
-        TrailingSpacesEnabled = False if(TrailingSpacesEnabled) else True
+        TrailingSpacesEnabled = False if TrailingSpacesEnabled else True
 
-        # If toggling on go ahead and perform a pass, if not clear the highlighting in all views
-        if(TrailingSpacesEnabled):
+        # If toggling on go ahead and perform a pass,
+        # if not clear the highlighting in all views
+        if TrailingSpacesEnabled:
             highlight_trailing_spaces(self.window.active_view())
         else:
             clear_trailing_spaces_highlight(self.window)
 
+
 # Highlight matching regions.
 class TrailingSpacesHighlightListener(sublime_plugin.EventListener):
     def on_modified(self, view):
-        if(TrailingSpacesEnabled):
+        if TrailingSpacesEnabled:
             highlight_trailing_spaces(view)
 
-    def on_activated(self,view):
-        if(TrailingSpacesEnabled):
+    def on_activated(self, view):
+        if TrailingSpacesEnabled:
             highlight_trailing_spaces(view)
 
-    def on_load(self,view):
-        if(TrailingSpacesEnabled):
+    def on_load(self, view):
+        if TrailingSpacesEnabled:
             highlight_trailing_spaces(view)
+
 
 # Allows to erase matching regions.
 class DeleteTrailingSpacesCommand(sublime_plugin.TextCommand):
