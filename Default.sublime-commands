@@ -1,0 +1,10 @@
+[
+	{
+		"caption": "Trailing Spaces: Toggle Trailing Spaces",
+		"command": "toggle_trailing_spaces"
+	},
+	{
+		"caption": "Trailing Spaces: Delete Trailing Spaces",
+		"command": "delete_trailing_spaces"
+	}
+]
