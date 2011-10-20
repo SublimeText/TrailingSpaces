@@ -17,37 +17,76 @@ Config summary (see README.md for details):
 @since: 2011-02-25
 '''
 
-import sublime, sublime_plugin
+import sublime
+import sublime_plugin
 
 DEFAULT_MAX_FILE_SIZE = 1048576
 DEFAULT_COLOR_SCOPE_NAME = "invalid"
+DEFAULT_IS_ENABLED = True
+
+#Set whether the plugin is on or off
+ts_settings = sublime.load_settings('trailing_spaces.sublime-settings')
+trailing_spaces_enabled = bool(ts_settings.get('trailing_spaces_enabled',
+                                               DEFAULT_IS_ENABLED))
+
 
 # Return an array of regions matching trailing spaces.
 def find_trailing_spaces(view):
-    trails = view.find_all('[ \t]+$')
-    regions = []
-    for trail in trails:
-      regions.append(trail)
-    return regions
+    return view.find_all('[ \t]+$')
+
+
+# Highlight trailing spaces
+def highlight_trailing_spaces(view):
+    max_size = ts_settings.get('trailing_spaces_file_max_size',
+                               DEFAULT_MAX_FILE_SIZE)
+    color_scope_name = ts_settings.get('trailing_spaces_highlight_color',
+                                       DEFAULT_COLOR_SCOPE_NAME)
+    if view.size() <= max_size:
+        regions = find_trailing_spaces(view)
+        view.add_regions('TrailingSpacesHighlightListener',
+                         regions, color_scope_name,
+                         sublime.DRAW_EMPTY)
+
+
+# Clear all trailing spaces
+def clear_trailing_spaces_highlight(window):
+    for view in window.views():
+        view.erase_regions('TrailingSpacesHighlightListener')
+
+
+# Toggle the event listner on or off
+class ToggleTrailingSpacesCommand(sublime_plugin.WindowCommand):
+    def run(self):
+        global trailing_spaces_enabled
+        trailing_spaces_enabled = False if trailing_spaces_enabled else True
+
+        # If toggling on, go ahead and perform a pass,
+        # else clear the highlighting in all views
+        if trailing_spaces_enabled:
+            highlight_trailing_spaces(self.window.active_view())
+        else:
+            clear_trailing_spaces_highlight(self.window)
+
 
 # Highlight matching regions.
 class TrailingSpacesHighlightListener(sublime_plugin.EventListener):
     def on_modified(self, view):
-        max_size = view.settings().get('trailing_spaces_file_max_size',
-                                       DEFAULT_MAX_FILE_SIZE)
-        color_scope_name = view.settings().get('trailing_spaces_highlight_color',
-                                               DEFAULT_COLOR_SCOPE_NAME)
-        if view.size() <= max_size:
-            regions = find_trailing_spaces(view)
-            view.add_regions('TrailingSpacesHighlightListener',
-                             regions, color_scope_name,
-                             sublime.DRAW_EMPTY)
+        if trailing_spaces_enabled:
+            highlight_trailing_spaces(view)
+
+    def on_activated(self, view):
+        if trailing_spaces_enabled:
+            highlight_trailing_spaces(view)
+
+    def on_load(self, view):
+        if trailing_spaces_enabled:
+            highlight_trailing_spaces(view)
+
 
 # Allows to erase matching regions.
 class DeleteTrailingSpacesCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         regions = find_trailing_spaces(self.view)
-
         if regions:
             # deleting a region changes the other regions positions, so we
             # handle this maintaining an offset
