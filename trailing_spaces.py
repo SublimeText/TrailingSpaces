@@ -23,12 +23,13 @@ import sublime_plugin
 DEFAULT_MAX_FILE_SIZE = 1048576
 DEFAULT_COLOR_SCOPE_NAME = "invalid"
 DEFAULT_IS_ENABLED = True
+DEFAULT_DELETE_ON_SAVE = True
 
 #Set whether the plugin is on or off
 ts_settings = sublime.load_settings('trailing_spaces.sublime-settings')
 trailing_spaces_enabled = bool(ts_settings.get('trailing_spaces_enabled',
                                                DEFAULT_IS_ENABLED))
-
+trailing_spaces_clear_on_save = bool(ts_settings.get('trailing_spaces_clear_on_save', DEFAULT_DELETE_ON_SAVE))
 
 # Return an array of regions matching trailing spaces.
 def find_trailing_spaces(view):
@@ -52,7 +53,6 @@ def highlight_trailing_spaces(view):
 def clear_trailing_spaces_highlight(window):
     for view in window.views():
         view.erase_regions('TrailingSpacesHighlightListener')
-
 
 # Toggle the event listner on or off
 class ToggleTrailingSpacesCommand(sublime_plugin.WindowCommand):
@@ -82,6 +82,9 @@ class TrailingSpacesHighlightListener(sublime_plugin.EventListener):
         if trailing_spaces_enabled:
             highlight_trailing_spaces(view)
 
+    def on_pre_save(self, view):
+        if trailing_spaces_clear_on_save:
+            view.run_command("delete_trailing_spaces")
 
 # Allows to erase matching regions.
 class DeleteTrailingSpacesCommand(sublime_plugin.TextCommand):
