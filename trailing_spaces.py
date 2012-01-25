@@ -32,7 +32,7 @@ trailingWhitespaces = set()
 
 # Return an array of regions matching trailing spaces.
 def find_trailing_spaces(view):
-    return set(view.find_all('[ \t]+$'))
+    return view.find_all('[ \t]+$')
 
 def update_region(view):
     global trailingWhitespaces
@@ -60,7 +60,7 @@ def highlight_trailing_spaces(view):
     max_size = ts_settings.get('trailing_spaces_file_max_size',
                                DEFAULT_MAX_FILE_SIZE)
     if view.size() <= max_size:
-        trailingWhitespaces = set(view.find_all('[ \t]+$'))
+        trailingWhitespaces = set(find_trailing_spaces(view))
         update_region(view)
 
 
