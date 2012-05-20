@@ -6,5 +6,8 @@
 	"trailing_spaces_file_max_size"   : 1048576,
 
 	// By default plugin is enabled or disabled (true|false)
-	"trailing_spaces_enabled"         : true
+	"trailing_spaces_enabled"         : true,
+
+	// By default there is no action on save
+	"trailing_spaces_delete_on_save": false
 }
