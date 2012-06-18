@@ -35,7 +35,9 @@ def is_find_results(view):
 
 # Return an array of regions matching trailing spaces.
 def find_trailing_spaces(view):
-    return view.find_all('[ \t]+$')
+    include_empty_lines = bool(ts_settings.get('trailing_spaces_include_empty_lines',
+                                               DEFAULT_IS_ENABLED))
+    return view.find_all('[ \t]+$' if include_empty_lines else '(?<=\S)[\t ]+$')
 
 
 # Highlight trailing spaces

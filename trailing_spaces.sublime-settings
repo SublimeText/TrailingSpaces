@@ -1,10 +1,13 @@
 {
 	// Color is determined by scope
-	"trailing_spaces_highlight_color" : "invalid",
+	"trailing_spaces_highlight_color"     : "invalid",
 
 	// Max file size to search
-	"trailing_spaces_file_max_size"   : 1048576,
+	"trailing_spaces_file_max_size"       : 1048576,
 
 	// By default plugin is enabled or disabled (true|false)
-	"trailing_spaces_enabled"         : true
+	"trailing_spaces_enabled"             : true,
+
+	// By default empty lines are cleared
+	"trailing_spaces_include_empty_lines" : true
 }
