@@ -29,6 +29,9 @@ ts_settings = sublime.load_settings('trailing_spaces.sublime-settings')
 trailing_spaces_enabled = bool(ts_settings.get('trailing_spaces_enabled',
                                                DEFAULT_IS_ENABLED))
 
+# Determine if the view is a find results view
+def is_find_results(view):
+    return "Find Results" in view.settings().get('syntax')
 
 # Return an array of regions matching trailing spaces.
 def find_trailing_spaces(view):
@@ -41,7 +44,7 @@ def highlight_trailing_spaces(view):
                                DEFAULT_MAX_FILE_SIZE)
     color_scope_name = ts_settings.get('trailing_spaces_highlight_color',
                                        DEFAULT_COLOR_SCOPE_NAME)
-    if view.size() <= max_size:
+    if view.size() <= max_size and not is_find_results(view):
         regions = find_trailing_spaces(view)
         view.add_regions('TrailingSpacesHighlightListener',
                          regions, color_scope_name,
