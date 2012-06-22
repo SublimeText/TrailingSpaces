@@ -31,7 +31,7 @@ trailing_spaces_enabled = bool(ts_settings.get('trailing_spaces_enabled',
 
 # Determine if the view is a find results view
 def is_find_results(view):
-    return "Find Results" in view.settings().get('syntax')
+    return view.settings().get('syntax') and "Find Results" in view.settings().get('syntax')
 
 # Return an array of regions matching trailing spaces.
 def find_trailing_spaces(view):
