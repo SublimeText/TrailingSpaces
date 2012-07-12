@@ -33,6 +33,12 @@ trailing_spaces_enabled = bool(ts_settings.get('trailing_spaces_enabled',
 def is_find_results(view):
     return view.settings().get('syntax') and "Find Results" in view.settings().get('syntax')
 
+# Determine if the view is part of HexViewer
+# https://github.com/facelessuser/HexViewer
+def is_hex_view(view):
+    return view.settings().get('syntax') and "HexViewer" in view.settings().get('syntax')
+
+
 # Return an array of regions matching trailing spaces.
 def find_trailing_spaces(view):
     include_empty_lines = bool(ts_settings.get('trailing_spaces_include_empty_lines',
@@ -46,7 +52,7 @@ def highlight_trailing_spaces(view):
                                DEFAULT_MAX_FILE_SIZE)
     color_scope_name = ts_settings.get('trailing_spaces_highlight_color',
                                        DEFAULT_COLOR_SCOPE_NAME)
-    if view.size() <= max_size and not is_find_results(view):
+    if view.size() <= max_size and not is_find_results(view) and not is_hex_view(view):
         regions = find_trailing_spaces(view)
         view.add_regions('TrailingSpacesHighlightListener',
                          regions, color_scope_name,
