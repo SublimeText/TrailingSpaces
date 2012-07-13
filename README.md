@@ -13,7 +13,7 @@ delete them by hand. This plugin provides just that!
 Go to your `Packages` subdirectory under ST2's data directory:
 
 * Windows: `%APPDATA%\Sublime Text 2`
-* OS X: `~/Library/Application Support/Sublime Text 2`
+* OS X: `~/Library/Application Support/Sublime Text 2/Packages`
 * Linux: `~/.config/sublime-text-2`
 * Portable Installation: `Sublime Text 2/Data`
 
