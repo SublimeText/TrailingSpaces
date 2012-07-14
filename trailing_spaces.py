@@ -26,18 +26,26 @@ DEFAULT_IS_ENABLED = True
 
 #Set whether the plugin is on or off
 ts_settings = sublime.load_settings('trailing_spaces.sublime-settings')
+
 trailing_spaces_enabled = bool(ts_settings.get('trailing_spaces_enabled',
                                                DEFAULT_IS_ENABLED))
+trailing_spaces_ignore = ts_settings.get('trailing_spaces_ignore', [])
 
-# Determine if the view is a find results view
-def is_find_results(view):
-    return view.settings().get('syntax') and "Find Results" in view.settings().get('syntax')
+def ignore_view(view):
+    if not view.settings().get('syntax'):
+      return False
 
-# Determine if the view is part of HexViewer
-# https://github.com/facelessuser/HexViewer
-def is_hex_view(view):
-    return view.settings().get('syntax') and "HexViewer" in view.settings().get('syntax')
+    view_syntax = view.settings().get('syntax');
 
+    # useful default ignores (find results view | HexViewer)
+    if "Find Results" in view_syntax or "HexViewer" in view_syntax:
+      return True
+
+    for syntax_ignore in trailing_spaces_ignore:
+      if syntax_ignore in view_syntax:
+        return True
+
+    return False
 
 # Return an array of regions matching trailing spaces.
 def find_trailing_spaces(view):
@@ -52,7 +60,7 @@ def highlight_trailing_spaces(view):
                                DEFAULT_MAX_FILE_SIZE)
     color_scope_name = ts_settings.get('trailing_spaces_highlight_color',
                                        DEFAULT_COLOR_SCOPE_NAME)
-    if view.size() <= max_size and not is_find_results(view) and not is_hex_view(view):
+    if view.size() <= max_size and not ignore_view(view):
         regions = find_trailing_spaces(view)
         view.add_regions('TrailingSpacesHighlightListener',
                          regions, color_scope_name,

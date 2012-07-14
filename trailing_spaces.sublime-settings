@@ -9,5 +9,8 @@
 	"trailing_spaces_enabled"             : true,
 
 	// By default empty lines are cleared
-	"trailing_spaces_include_empty_lines" : true
+	"trailing_spaces_include_empty_lines" : true,
+
+  // Ignore views which use specific syntax (example ["Python"])
+  "trailing_spaces_ignore": []
 }
