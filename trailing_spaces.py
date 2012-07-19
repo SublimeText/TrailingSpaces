@@ -34,10 +34,18 @@ def is_find_results(view):
     return view.settings().get('syntax') and "Find Results" in view.settings().get('syntax')
 
 # Return an array of regions matching trailing spaces.
-def find_trailing_spaces(view):
+def find_trailing_spaces(view, ignore_on_cursor = False):
     include_empty_lines = bool(ts_settings.get('trailing_spaces_include_empty_lines',
                                                DEFAULT_IS_ENABLED))
-    return view.find_all('[ \t]+$' if include_empty_lines else '(?<=\S)[\t ]+$')
+    #do not highlight if cursor is attached to it
+    spaces_set = view.find_all('[ \t]+$' if include_empty_lines else '(?<=\S)[\t ]+$')
+    if ignore_on_cursor:
+        for cursor_region in view.sel():
+            cursor_pos = cursor_region.end()
+            for spaces_region in spaces_set:
+                if spaces_region.end() == cursor_pos:
+                    spaces_set.remove(spaces_region)
+    return spaces_set
 
 
 # Highlight trailing spaces
@@ -46,8 +54,10 @@ def highlight_trailing_spaces(view):
                                DEFAULT_MAX_FILE_SIZE)
     color_scope_name = ts_settings.get('trailing_spaces_highlight_color',
                                        DEFAULT_COLOR_SCOPE_NAME)
+    ignore_on_cursor = bool(ts_settings.get('ignore_on_cursor',
+                                               DEFAULT_IS_ENABLED))
     if view.size() <= max_size and not is_find_results(view):
-        regions = find_trailing_spaces(view)
+        regions = find_trailing_spaces(view, ignore_on_cursor)
         view.add_regions('TrailingSpacesHighlightListener',
                          regions, color_scope_name,
                          sublime.DRAW_EMPTY)
