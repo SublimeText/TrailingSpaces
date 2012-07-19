@@ -23,11 +23,14 @@ import sublime_plugin
 DEFAULT_MAX_FILE_SIZE = 1048576
 DEFAULT_COLOR_SCOPE_NAME = "invalid"
 DEFAULT_IS_ENABLED = True
+DEFAULT_EXECUTE_ON_SAVE = False
 
 #Set whether the plugin is on or off
 ts_settings = sublime.load_settings('trailing_spaces.sublime-settings')
 trailing_spaces_enabled = bool(ts_settings.get('trailing_spaces_enabled',
                                                DEFAULT_IS_ENABLED))
+trailing_spaces_delete_on_save = bool(ts_settings.get('trailing_spaces_delete_on_save',
+                                               DEFAULT_EXECUTE_ON_SAVE))
 
 # Determine if the view is a find results view
 def is_find_results(view):
@@ -96,6 +99,10 @@ class TrailingSpacesHighlightListener(sublime_plugin.EventListener):
     def on_load(self, view):
         if trailing_spaces_enabled:
             highlight_trailing_spaces(view)
+
+    def on_pre_save(self, view):
+        if trailing_spaces_delete_on_save:
+            view.run_command('delete_trailing_spaces')
 
 
 # Allows to erase matching regions.
