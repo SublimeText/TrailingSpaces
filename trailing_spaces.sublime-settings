@@ -9,5 +9,11 @@
 	"trailing_spaces_enabled"             : true,
 
 	// By default empty lines are cleared
-	"trailing_spaces_include_empty_lines" : true
+	"trailing_spaces_include_empty_lines" : true,
+
+	// Do not highlight trailing spaces, if they are next to cursor
+	"ignore_on_cursor" : true,
+
+	// By default, delete trailing spaces on save
+	"trailing_spaces_delete_on_save": true
 }

@@ -64,3 +64,12 @@ Highlighting may be disabled for large files. The default threshold is around
 
 Even though the trailing spaces are not highlighted, one can still delete them
 using the deletion command.
+
+### Execute deletion command before saving the file
+
+It could be useful to run the command 'delete_trailing_spaces' automatically before
+saving the file
+
+``` js
+{ "trailing_spaces_delete_on_save": true }
+```
