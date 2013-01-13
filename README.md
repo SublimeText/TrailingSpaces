@@ -64,3 +64,16 @@ Highlighting may be disabled for large files. The default threshold is around
 
 Even though the trailing spaces are not highlighted, one can still delete them
 using the deletion command.
+
+### Disabling highlighting for current line
+
+Highlighting trailing spaces for the current line being edited can be disabled
+so the warning color is not seen after every space character when adding to a
+line of code
+
+``` js
+{ "trailing_spaces_inlude_current_line": false}
+```
+
+Even though the trailing spaces are not highlighted, one can still delete them
+using the deletion command.
