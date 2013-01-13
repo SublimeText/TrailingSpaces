@@ -35,10 +35,19 @@ def is_find_results(view):
 
 # Return an array of regions matching trailing spaces.
 def find_trailing_spaces(view):
+    sel = view.sel()[0]
+    line = view.line(sel.b)
     include_empty_lines = bool(ts_settings.get('trailing_spaces_include_empty_lines',
                                                DEFAULT_IS_ENABLED))
-    return view.find_all('[ \t]+$' if include_empty_lines else '(?<=\S)[\t ]+$')
-
+    include_current_line = bool(ts_settings.get('trailing_spaces_inlude_current_line',
+                                                DEFAULT_IS_ENABLED))
+    offending_lines = view.find_all('[ \t]+$' if include_empty_lines else '(?<=\S)[\t ]+$')
+    if include_current_line:
+        return offending_lines
+    else:
+        current_offender = view.find('[ \t]+$' if include_empty_lines else '(?<=\S)[\t ]+$', line.a)
+        removal = False if current_offender == None else line.intersects(current_offender)
+        return [i for i in offending_lines if i != current_offender] if removal else offending_lines
 
 # Highlight trailing spaces
 def highlight_trailing_spaces(view):
