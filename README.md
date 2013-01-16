@@ -72,7 +72,7 @@ so the warning color is not seen after every space character when adding to a
 line of code
 
 ``` js
-{ "trailing_spaces_inlude_current_line": false}
+{ "trailing_spaces_include_current_line": false}
 ```
 
 Even though the trailing spaces are not highlighted, one can still delete them
