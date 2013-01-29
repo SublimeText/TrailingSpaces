@@ -12,5 +12,5 @@
 	"trailing_spaces_include_empty_lines" : true,
 
 	// By default the line being currently edited will not report trailing whitespace
-	"trailing_spaces_inlude_current_line" : true
+	"trailing_spaces_include_current_line" : true
 }
