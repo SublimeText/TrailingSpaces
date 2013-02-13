@@ -58,8 +58,7 @@ def highlight_trailing_spaces(view):
     if view.size() <= max_size and not is_find_results(view):
         regions = find_trailing_spaces(view)
         view.add_regions('TrailingSpacesHighlightListener',
-                         regions, color_scope_name,
-                         sublime.DRAW_EMPTY)
+                         regions, color_scope_name)
 
 
 # Clear all trailing spaces
