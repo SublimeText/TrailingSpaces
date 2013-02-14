@@ -37,9 +37,12 @@ def plugin_loaded():
                                                    DEFAULT_IS_ENABLED))
     for view in startup_queue:
         highlight_trailing_spaces(view)
+
+
 # Determine if the view is a find results view
 def is_find_results(view):
     return view.settings().get('syntax') and "Find Results" in view.settings().get('syntax')
+
 
 # Return an array of regions matching trailing spaces.
 def find_trailing_spaces(view):
@@ -56,6 +59,7 @@ def find_trailing_spaces(view):
         current_offender = view.find('[ \t]+$' if include_empty_lines else '(?<=\S)[\t ]+$', line.a)
         removal = False if current_offender == None else line.intersects(current_offender)
         return [i for i in offending_lines if i != current_offender] if removal else offending_lines
+
 
 # Highlight trailing spaces
 def highlight_trailing_spaces(view):
