@@ -27,13 +27,16 @@ DEFAULT_IS_ENABLED = True
 # Global settings object
 ts_settings = None
 trailing_spaces_enabled = DEFAULT_IS_ENABLED
+startup_queue = []
 
 # Load settings and set whether the plugin is on or off
 def plugin_loaded():
+    global ts_settings, trailing_spaces_enabled, startup_queue
     ts_settings = sublime.load_settings('trailing_spaces.sublime-settings')
     trailing_spaces_enabled = bool(ts_settings.get('trailing_spaces_enabled',
                                                    DEFAULT_IS_ENABLED))
-
+    for view in startup_queue:
+        highlight_trailing_spaces(view)
 # Determine if the view is a find results view
 def is_find_results(view):
     return view.settings().get('syntax') and "Find Results" in view.settings().get('syntax')
@@ -56,8 +59,11 @@ def find_trailing_spaces(view):
 
 # Highlight trailing spaces
 def highlight_trailing_spaces(view):
+    if ts_settings is None:
+        startup_queue.append(view)
+        return
     max_size = ts_settings.get('trailing_spaces_file_max_size',
-                               DEFAULT_MAX_FILE_SIZE)
+                                   DEFAULT_MAX_FILE_SIZE)
     color_scope_name = ts_settings.get('trailing_spaces_highlight_color',
                                        DEFAULT_COLOR_SCOPE_NAME)
     if view.size() <= max_size and not is_find_results(view):
@@ -124,5 +130,5 @@ class DeleteTrailingSpacesCommand(sublime_plugin.TextCommand):
 
 
 # Call the plugin_loaded callback manually if on ST2
-if not (sublime.version() > 3000):
+if not int(sublime.version()) > 3000:
     plugin_loaded()
