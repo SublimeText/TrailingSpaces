@@ -1,8 +1,9 @@
 ## Synopsis
 
-This is a [Sublime Text 2](http://www.sublimetext.com/2) plugin, with some support for ST3 as well (not official yet). It…
+This is a [Sublime Text 2](http://www.sublimetext.com/2) plugin, with some support for ST3 as well
+(not official yet). It allows you to…
 
-**highlights trailing spaces and deletes them in a flash.**
+**highlight trailing spaces and delete them in a flash!**
 
 ST2 provides a way to automatically delete trailing spaces *upon file save*.
 Depending on your settings, it may be more handy to just highlight them and/or
@@ -35,7 +36,7 @@ you must define it into "Key Bindings - User":
 { "keys": ["ctrl+shift+t"], "command": "delete_trailing_spaces" }
 ```
 
-With this setting, pressing Ctrl + Shift + t will delete all trailing spaces at once in the current file!
+With this setting, pressing <kbd>Ctrl + Shift + t</kbd> will delete all trailing spaces at once in the current file!
 
 ## Options
 
