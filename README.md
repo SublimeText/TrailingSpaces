@@ -33,10 +33,10 @@ you must define it into "Key Bindings - User":
 
 ``` js
 { "keys": ["ctrl+shift+t"], "command": "delete_trailing_spaces" }
+```
 
 With this setting, pressing Ctrl + Shift + t will delete all trailing spaces at once in the current file!
 
-```
 ## Options
 
 Several options are available to customize the plugin look 'n feel and behaviour. The
