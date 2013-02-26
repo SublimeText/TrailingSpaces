@@ -90,6 +90,10 @@ set the highlight color to an empty string:
 { "trailing_spaces_highlight_color": "" }
 ```
 
+*Beware*: this is not the same as disabling the highlighting (see below). With this setting, the plugin still
+runs when opening a file and live afterwards, you just won't see the trailing spaces highlighted. Most of the
+time, what you'll want is on-demand highlighting (again, see below).
+
 ### Disabling highlighting for large files
 
 Highlighting may be disabled for large files, for it may cause slowiness. The default threshold
