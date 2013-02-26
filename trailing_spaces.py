@@ -111,18 +111,19 @@ class TrailingSpacesHighlightListener(sublime_plugin.EventListener):
             highlight_trailing_spaces(view)
 
 
-# Allows to erase matching regions.
+# Deletes the matching regions.
+#
+# Note to self: TextCommand have an attached edit so we don't need to create an
+# explicit Edit buffer.
 class DeleteTrailingSpacesCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         regions = find_trailing_spaces(self.view)
         if regions:
-            # deleting a region changes the other regions positions, so we
-            # handle this maintaining an offset
-            offset = 0
-            for region in regions:
-                r = sublime.Region(region.a + offset, region.b + offset)
-                self.view.erase(edit, sublime.Region(r.a, r.b))
-                offset -= r.size()
+            # Trick: reversing the regions takes care of the growing offset
+            # while deleting the successive regions.
+            regions.reverse()
+            for r in regions:
+                self.view.erase(edit, r)
 
             msg_parts = {"nbRegions": len(regions),
                          "plural":    's' if len(regions) > 1 else ''}
