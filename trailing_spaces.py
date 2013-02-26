@@ -1,16 +1,7 @@
 '''
 Provides both a trailing spaces highlighter and a deletion command.
 
-Config summary (see README.md for details):
-
-    # key binding
-    { "keys": ["ctrl+shift+t"], "command": "delete_trailing_spaces" }
-
-    # file settings
-    {
-      "trailing_spaces_highlight_color": "invalid",
-      "trailing_spaces_file_max_size": 1000
-    }
+See README.md for details.
 
 @author: Jean-Denis Vauguet <jd@vauguet.fr>, Oktay Acikalin <ok@ryotic.de>
 @license: MIT (http://www.opensource.org/licenses/mit-license.php)

@@ -12,16 +12,16 @@ delete them by hand, at any time. This plugin provides just that!
 ## Installation
 
 It should be available through [Sublime Package Contol](http://wbond.net/sublime_packages/package_control) and
-this is the recommended way of installing the plugin.
+this is the recommended way of installation.
 
-You can still install it by hand if you want. Go to your `Packages` subdirectory under ST2's data directory:
+You can still install from github if you want. Go to your `Packages` subdirectory under ST2's data directory:
 
 * Windows: `%APPDATA%\Sublime Text 2`
 * OS X: `~/Library/Application Support/Sublime Text 2`
 * Linux: `~/.config/sublime-text-2`
 * Portable Installation: `Sublime Text 2/Data`
 
-Then clone this repository using [git](http://git-scm.com):
+Then clone this repository with [git](http://git-scm.com):
 
     git clone git://github.com/SublimeText/TrailingSpaces.git
 
@@ -37,10 +37,11 @@ you must define it into "Preferences / Key Bindings - User":
 ```
 
 With this setting, pressing <kbd>Ctrl + Shift + t</kbd> will delete all trailing spaces at once in the current file!
-To quote wbond: "When porting a key binding across OSes, it is common for the ctrl key onWindows and Linux to be
-swapped out for super on OS X" (eg. use "super+ctrl+t" if you want to).
+For OSX users, quoting wbond: "When porting a key binding across OSes, it is common for the ctrl key onWindows and
+Linux to be swapped out for super on OS X" (eg. use "super+ctrl+t" instead).
 
-*Beware*: I like this shortcut but it overrides the default ST's mapping for reopening last closed file. Pick what you like.
+*Beware*: I like this shortcut, but it overrides the default ST's mapping for reopening last closed file. You can
+look at existing bindings in "Preferences / Key Bindings - Default".
 
 ## Options
 
@@ -149,21 +150,27 @@ Oh, and for those who wonder: several options must be comma-separated, like this
 
 ## Deleting trailing spaces upon file save / display whitespaces
 
-Sublime Text is able to delete trailing spaces on saving files. In order to enable this behavior, edit the
-"Preferences / Settings - User" file and add the following setting:
+Sublime Text is able to delete trailing spaces upon saving files. In order to enable this behavior, edit the
+"Preferences / Settings - User" file to add the following setting:
 
 ``` js
 { "trim_trailing_white_space_on_save": true }
 ```
 
-This is of course compatible with using this plugin, which obviously does not provide a redundant option
-for this behavior.
+This is of course compatible with using this plugin, and that is why it does not provide a redundant option
+for this specific behavior (it might change in the future, though).
 
-Made a little less obvious in the documentation is a setting to display whitespaces (not only trailing ones!):
+Made a little less obvious in ST documentation are settings to display whitespaces (not only trailing ones!):
 
 ``` js
 { "draw_white_space": "all" }
 ```
 
-This will display all whitespaces in your files. There is another value of "selection" which display whitespaces
+And a setting to ensure a newline is kept at end of file upon saving:
+
+``` js
+{ "ensure_newline_at_eof_on_save": true }
+```
+
+The former will display all whitespaces in your files. There is another value of "selection" which display whitespaces
 under, you got it, your current text selection.
