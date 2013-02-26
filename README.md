@@ -42,24 +42,21 @@ With this setting, pressing <kbd>Ctrl + Shift + t</kbd> will delete all trailing
 
 ## Options
 
-Several options are available to customize the plugin look 'n feel and behaviour. The
-config keys goes into config files accessible throught the "Preferences" menu.
-
-It is recommended using a specific settings file for this plugin. Under your ST's location (see above), you
-will create it at `Packages/User/trailing_spaces.sublime-settings`.
+Several options are available to customize the plugin look 'n feel and behavior. The
+config keys goes into a specific settings file for this plugin. Under your ST's location (see above), you
+will need to create the file `Packages/User/trailing_spaces.sublime-settings`.
 
 ### Changing the highlighting color
 
-One may also change the highlighting color, providing a scope name such
-as "invalid", "comment"... in "File Settings - User":
+You may change the highlighting color, providing a scope name such as "invalid", "comment"… just like that:
 
 ``` js
 { "trailing_spaces_highlight_color": "invalid" }
 ```
 
-Actually, "invalid" is the default value. If you'd like to use a custom color,
-it should be defined as a color scope in your theme file. This is a dummy, fully-fledged
-example (feel free to cut irrelevant pieces for your settings):
+Actually, "invalid" is the default value. If you would like to use a custom color,
+it should be defined as a color scope in your current theme file. Here is a dummy, fully-fledged
+example (feel free to cut irrelevant pieces for your settings) of a custom color scope:
 
 ``` xml
 <dict>
@@ -84,15 +81,15 @@ And you would use the value of "invalid.illegal" in your setting to make use of 
 ### Making it invisible
 
 You can make trailing spaces "invisible" and still rely on the deletion command. To do that, just
-set the highlight color to an empty string:
+set the highlighting color to an empty string:
 
 ``` js
 { "trailing_spaces_highlight_color": "" }
 ```
 
-*Beware*: this is not the same as disabling the highlighting (see below). With this setting, the plugin still
-runs when opening a file and live afterwards, you just won't see the trailing spaces highlighted. Most of the
-time, what you'll want is on-demand highlighting (again, see below).
+*Beware*: this is **not** the same as disabling the highlighting (see below). With this setting, the plugin still
+runs when opening a file and live afterwards, you just won't see the trailing spaces (they are highlighted with
+a "transparent color"). Most of the time, what you will want is "On-demand highlighting" (again, see below).
 
 ### Disabling highlighting for large files
 
