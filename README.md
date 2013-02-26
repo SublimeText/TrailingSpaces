@@ -115,6 +115,24 @@ line of code:
 Even though the trailing spaces are not highlighted, one can still delete them
 using the deletion command.
 
+### On-demand highlighting / no highlighting
+
+The highlighting feature is entirely optionnal: as long as you defined a mapping to the deletion
+command, you can run it and it will perform as expected, detecting and erasing all trailing spaces
+although they are not made "visible". You can disable highlighting with this setting:
+
+``` js
+{ "trailing_spaces_enabled": false }
+```
+
+Still, you may want to toggle highlighting, just to check them out. In order to do that, define a
+mapping to the toggling command:
+
+``` js
+// I like "d", as in "detect".
+{ "keys": ["ctrl+shift+d"], "command": "toggle_trailing_spaces" }
+```
+
 ----
 
 Oh, and for those who wonder: several options must be comma-separated, like this:
