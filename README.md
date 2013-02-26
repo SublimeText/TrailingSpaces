@@ -17,7 +17,7 @@ this is the recommended way of installing the plugin.
 You can still install it by hand if you want. Go to your `Packages` subdirectory under ST2's data directory:
 
 * Windows: `%APPDATA%\Sublime Text 2`
-* OS X: `~/Library/Application Support/Sublime Text 2/Packages`
+* OS X: `~/Library/Application Support/Sublime Text 2`
 * Linux: `~/.config/sublime-text-2`
 * Portable Installation: `Sublime Text 2/Data`
 
