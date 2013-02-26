@@ -1,16 +1,16 @@
 {
-	// Color is determined by scope
+	// Highlight color is specified as a scope.
 	"trailing_spaces_highlight_color"     : "invalid",
 
 	// Max file size to search
 	"trailing_spaces_file_max_size"       : 1048576,
 
-	// By default plugin is enabled or disabled (true|false)
+	// By default, plugin is enabled or disabled (true|false)
 	"trailing_spaces_enabled"             : true,
 
-	// By default empty lines are cleared
+	// By default, empty lines are cleared
 	"trailing_spaces_include_empty_lines" : true,
 
-	// By default the line being currently edited will not report trailing whitespace
+	// By default, the line being currently edited will report trailing whitespace
 	"trailing_spaces_include_current_line" : true
 }
