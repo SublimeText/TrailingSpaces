@@ -107,8 +107,19 @@ to disable it, so the warning color is not seen after every space character when
 line of code:
 
 ``` js
-{ "trailing_spaces_include_current_line": false}
+{ "trailing_spaces_include_current_line": false }
 ```
 
 Even though the trailing spaces are not highlighted, one can still delete them
 using the deletion command.
+
+----
+
+Oh, and for those who wonder: several options must be comma-separated, like this:
+
+``` js
+{
+  "option_1": value1,
+  "option_2": value2
+}
+```
