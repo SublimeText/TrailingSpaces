@@ -38,7 +38,7 @@ you must define it into "Preferences / Key Bindings - User":
 
 With this setting, pressing <kbd>Ctrl + Shift + t</kbd> will delete all trailing spaces at once in the current file!
 
-''Beware'': I like this shortcut but it overrides the default ST's mapping for reopening last closed file. Pick what you like.
+*Beware*: I like this shortcut but it overrides the default ST's mapping for reopening last closed file. Pick what you like.
 
 ## Options
 
