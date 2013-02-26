@@ -93,7 +93,7 @@ a "transparent color"). Most of the time, what you will want is "On-demand highl
 
 ### Disabling highlighting for large files
 
-Highlighting may be disabled for large files, for it may cause slowiness. The default threshold
+Highlighting may be disabled for large files, for it may cause slowness. The default threshold
 is around 1 million of characters. This is configurable (in "File Settings - User"); unit is number of chars:
 
 ``` js
