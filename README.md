@@ -30,13 +30,15 @@ That's it!
 ## Configuration
 
 In order to use the deletion feature, one must bind the deletion command to a shortcut. To add the mapping,
-you must define it into "Key Bindings - User":
+you must define it into "Preferences / Key Bindings - User":
 
 ``` js
 { "keys": ["ctrl+shift+t"], "command": "delete_trailing_spaces" }
 ```
 
 With this setting, pressing <kbd>Ctrl + Shift + t</kbd> will delete all trailing spaces at once in the current file!
+
+''Beware'': I like this shortcut but it overrides the default ST's mapping for reopening last closed file. Pick what you like.
 
 ## Options
 
