@@ -48,7 +48,7 @@ config keys goes into config files accessible throught the "Preferences" menu.
 It is recommended using a specific settings file for this plugin. Under your ST's location (see above), you
 will create it at `Packages/User/trailing_spaces.sublime-settings`.
 
-### Change the highlighting color
+### Changing the highlighting color
 
 One may also change the highlighting color, providing a scope name such
 as "invalid", "comment"... in "File Settings - User":
