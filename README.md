@@ -5,7 +5,7 @@ This is a [Sublime Text 2](http://www.sublimetext.com/2) plugin, with some suppo
 
 **highlight trailing spaces and delete them in a flash!**
 
-ST2 provides a way to automatically delete trailing spaces *upon file save*.
+ST2 provides a way to automatically delete trailing spaces *upon file save* (see below).
 Depending on your settings, it may be more handy to just highlight them and/or
 delete them by hand, at any time. This plugin provides just that!
 
@@ -123,3 +123,15 @@ Oh, and for those who wonder: several options must be comma-separated, like this
   "option_2": value2
 }
 ```
+
+## Deleting trailing spaces upon file save
+
+Sublime Text can delete trailing spaces on saving files. In order to enable this behavior, edit the
+"Preferences / Settings - User" file and add the following setting:
+
+``` js
+"trim_trailing_white_space_on_save": true
+```
+
+This is of course compatible with using this plugin, which obviously does not provide a redundant option
+for this behavior.
