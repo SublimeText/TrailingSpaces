@@ -24,12 +24,12 @@ DEFAULT_MAX_FILE_SIZE = 1048576
 DEFAULT_COLOR_SCOPE_NAME = "invalid"
 DEFAULT_IS_ENABLED = True
 
-# Global settings object
+# Global settings object.
 ts_settings = None
 trailing_spaces_enabled = DEFAULT_IS_ENABLED
 startup_queue = []
 
-# Load settings and set whether the plugin is on or off
+# Load settings and set whether the plugin is on or off.
 def plugin_loaded():
     global ts_settings, trailing_spaces_enabled, startup_queue
     ts_settings = sublime.load_settings('trailing_spaces.sublime-settings')
@@ -39,7 +39,7 @@ def plugin_loaded():
         highlight_trailing_spaces(view)
 
 
-# Determine if the view is a find results view
+# Determine if the view is a find results view.
 def is_find_results(view):
     return view.settings().get('syntax') and "Find Results" in view.settings().get('syntax')
 
@@ -61,13 +61,13 @@ def find_trailing_spaces(view):
         return [i for i in offending_lines if i != current_offender] if removal else offending_lines
 
 
-# Highlight trailing spaces
+# Mark and highlight trailing spaces.
 def highlight_trailing_spaces(view):
     if ts_settings is None:
         startup_queue.append(view)
         return
     max_size = ts_settings.get('trailing_spaces_file_max_size',
-                                   DEFAULT_MAX_FILE_SIZE)
+                               DEFAULT_MAX_FILE_SIZE)
     color_scope_name = ts_settings.get('trailing_spaces_highlight_color',
                                        DEFAULT_COLOR_SCOPE_NAME)
     if view.size() <= max_size and not is_find_results(view):
@@ -76,20 +76,20 @@ def highlight_trailing_spaces(view):
                          regions, color_scope_name)
 
 
-# Clear all trailing spaces
+# Clear all the highlighted regions.
 def clear_trailing_spaces_highlight(window):
     for view in window.views():
         view.erase_regions('TrailingSpacesHighlightListener')
 
 
-# Toggle the event listner on or off
+# Toggle the highlighting on or off.
 class ToggleTrailingSpacesCommand(sublime_plugin.WindowCommand):
     def run(self):
         global trailing_spaces_enabled
         trailing_spaces_enabled = False if trailing_spaces_enabled else True
 
-        # If toggling on, go ahead and perform a pass,
-        # else clear the highlighting in all views
+        # If toggling on, go ahead and perform a pass;
+        # else, clear the highlighting in all views.
         if trailing_spaces_enabled:
             highlight_trailing_spaces(self.window.active_view())
         else:
@@ -133,6 +133,6 @@ class DeleteTrailingSpacesCommand(sublime_plugin.TextCommand):
         sublime.status_message(msg)
 
 
-# Call the plugin_loaded callback manually if on ST2
+# Call the plugin_loaded callback manually if on ST2.
 if not int(sublime.version()) > 3000:
     plugin_loaded()
