@@ -1,0 +1,78 @@
+[
+    {
+        "id": "edit",
+        "children":
+        [
+            { "id": "wrap" },
+            { "command": "delete_trailing_spaces" }
+        ]
+    },
+    {
+        "id": "preferences",
+        "children":
+        [
+            {
+                "caption": "Package Settings",
+                "mnemonic": "P",
+                "id": "package-settings",
+                "children":
+                [
+                    {
+                        "caption": "Trailing Spaces",
+                        "children":
+                        [
+                            {
+                                "command": "open_file",
+                                "args": {
+                                    "file": "${packages}/TrailingSpaces/trailing_spaces.sublime-settings",
+                                    "platform": "Windows"
+                                },
+                                "caption": "Settings - Default"
+                            },
+                            {
+                                "command": "open_file",
+                                "args": {
+                                    "file": "${packages}/TrailingSpaces/trailing_spaces.sublime-settings",
+                                    "platform": "OSX"
+                                },
+                                "caption": "Settings - Default"
+                            },
+                            {
+                                "command": "open_file",
+                                "args": {
+                                    "file": "${packages}/TrailingSpaces/trailing_spaces.sublime-settings",
+                                    "platform": "Linux"
+                                },
+                                "caption": "Settings - Default"
+                            },
+                            {
+                                "command": "open_file",
+                                "args": {
+                                    "file": "${packages}/User/trailing_spaces.sublime-settings",
+                                    "platform": "Windows"
+                                },
+                                "caption": "Settings - User"
+                            },
+                            {
+                                "command": "open_file",
+                                "args": {
+                                    "file": "${packages}/User/trailing_spaces.sublime-settings",
+                                    "platform": "OSX"
+                                },
+                                "caption": "Settings - User"
+                            },
+                            {
+                                "command": "open_file",
+                                "args": {
+                                    "file": "${packages}/User/trailing_spaces.sublime-settings",
+                                    "platform": "Linux"
+                                },
+                                "caption": "Settings - User"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

@@ -29,8 +29,12 @@ That's it!
 
 ## Configuration
 
-In order to use the deletion feature, one must bind the deletion command to a shortcut. To add the mapping,
-you must define it into "Preferences / Key Bindings - User":
+In order to use the deletion feature, one may either:
+
+* go to "Edit / Delete Trailing Spaces";
+* bind the deletion command to a shortcut.
+
+To add a key binding, you must define it into "Preferences / Key Bindings - User":
 
 ``` js
 { "keys": ["ctrl+shift+t"], "command": "delete_trailing_spaces" }
@@ -46,8 +50,9 @@ look at existing bindings in "Preferences / Key Bindings - Default".
 ## Options
 
 Several options are available to customize the plugin look 'n feel and behavior. The
-config keys goes into a specific settings file for this plugin. Under your ST's location (see above), you
-will need to create the file `Packages/User/trailing_spaces.sublime-settings`.
+config keys goes into a specific settings file for this plugin.
+Go to "Preferences / Package Settings / Trailing Spaces / Settings - User" to add you custom settings.
+You can look at the default values in "Settings - Default" in the same menu.
 
 ### Changing the highlighting color
 

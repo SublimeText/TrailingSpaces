@@ -1,6 +1,6 @@
 [
 	{
-		"caption": "Trailing Spaces: Toggle Trailing Spaces",
+		"caption": "Trailing Spaces: Toggle Trailing Spaces Highlighting",
 		"command": "toggle_trailing_spaces"
 	},
 	{
