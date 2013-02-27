@@ -5,22 +5,25 @@
 
     You're now ready to give trailing spaces *a hard time*!
 
+    Wait… I guess Package Control just introduced some of them :(
+    Why don't you try clicking "Edit / Delete Trailing Spaces"?
+
 
 
 Documentation
 =============
 
 Although the usage of this plugin is dead simple, it comes with several options. All
-details are available in the documentation, which you can open by clicking on
-"Preferences / Package Settings / Trailing Spaces / Help", or in a prettier form at
-https://github.com/SublimeText/TrailingSpaces.
+details are available in the documentation, and you can read it by clicking on
+"Preferences / Package Settings / Trailing Spaces / Help", or in a prettier form, by
+browsing https://github.com/SublimeText/TrailingSpaces.
 
 Key binding
 ===========
 
 This plugin does not come with a default key binding for the deletion command. You can
 pick your own key binding and define it in "Preferences / Key Bindings - User", or just
-stick to using the menu "Edit / Delete Trailing Spaces". Check the help for details.
+stick to using the menu entry under "Edit". Check the help for advice on this.
 
 Upgrades, issues
 ================
