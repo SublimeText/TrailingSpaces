@@ -24,6 +24,31 @@
                             {
                                 "command": "open_file",
                                 "args": {
+                                    "file": "${packages}/TrailingSpaces/README.md",
+                                    "platform": "Windows"
+                                },
+                                "caption": "Help"
+                            },
+                            {
+                                "command": "open_file",
+                                "args": {
+                                    "file": "${packages}/TrailingSpaces/README.md",
+                                    "platform": "OSX"
+                                },
+                                "caption": "Help"
+                            },
+                            {
+                                "command": "open_file",
+                                "args": {
+                                    "file": "${packages}/TrailingSpaces/README.md",
+                                    "platform": "Linux"
+                                },
+                                "caption": "Help"
+                            },
+                            { "caption": "-" },
+                            {
+                                "command": "open_file",
+                                "args": {
                                     "file": "${packages}/TrailingSpaces/trailing_spaces.sublime-settings",
                                     "platform": "Windows"
                                 },
