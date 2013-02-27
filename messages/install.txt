@@ -1,0 +1,37 @@
+
+
+    Thank you for installing Trailing Spaces
+    ----------------------------------------
+
+    You're now ready to give trailing spaces *a hard time*!
+
+
+
+Documentation
+=============
+
+Although the usage of this plugin is dead simple, it comes with several options. All
+details are available in the documentation, which you can open by clicking on
+"Preferences / Package Settings / Trailing Spaces / Help", or in a prettier form at
+https://github.com/SublimeText/TrailingSpaces.
+
+Key binding
+===========
+
+This plugin does not come with a default key binding for the deletion command. You can
+pick your own key binding and define it in "Preferences / Key Bindings - User", or just
+stick to using the menu "Edit / Delete Trailing Spaces". Check the help for details.
+
+Upgrades, issues
+================
+
+Package Control will automatically upgrade all packages every time the editor is started,
+so there is nothing for you to worry about. If you however do find the plugin to not work
+as it used to, head to the issues tracker (see links below) to report the problem.
+
+Useful links
+============
+
+* Documentation & code: https://github.com/SublimeText/TrailingSpaces
+* Report issues / request for new features: https://github.com/SublimeText/TrailingSpaces/issues
+* Follow me on twitter: @jdvauguet
