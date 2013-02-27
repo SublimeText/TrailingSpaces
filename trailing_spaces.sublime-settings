@@ -1,17 +1,31 @@
+// Trailing Spaces' default settings.
+//
+// In order to tweak the settings, you should NOT edit this file, but instead the user-specific,
+// empsy-by-default version under "Preferences / Package Settings / Trailing Spaces / Settings - User".
+// See Trailing Spaces' README for detailled instructions.
 {
     // By default, Trailing Spaces is enabled.
+    // Set to false to disable live matching and highlighting (the deletion command remains available).
     "trailing_spaces_enabled" : true,
 
     // Highlight color is specified as a scope. You may define and use a custom scope
-    // to better fit your colorscheme: see Trailing Spaces' README.
+    // to better fit your colorscheme.
     "trailing_spaces_highlight_color" : "invalid",
 
-    // Highlighting will be disabled if the edited file's size is larger than this.
-    "trailing_spaces_file_max_size" : 1048576,
-
     // By default, empty lines are cleared as well when calling the deletion command.
+    // Set to false to ignore empty lines upon deletion.
     "trailing_spaces_include_empty_lines" : true,
 
-    // By default, the line being currently edited will report trailing spaces.
-    "trailing_spaces_include_current_line" : true
+    // By default, the line being currently edited will have its trailing spaces highlighted.
+    // Set to false to ignore trailing spaces on the edited line.
+    "trailing_spaces_include_current_line" : true,
+
+    // ---- NEXT SETTINGS ARE FOR POWER USERS ONLY! ----
+
+    // Highlighting will be disabled if the edited file's size is larger than this.
+    // Adjust the value (in number of chars) to whatever fits your performance.
+    "trailing_spaces_file_max_size" : 1048576,
+
+    // By default, only simple spaces and tabs are matched as "trailing spaces".
+    "trailing_spaces_regexp": "[ \t]+"
 }

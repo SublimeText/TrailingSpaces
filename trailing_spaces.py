@@ -43,11 +43,14 @@ def find_trailing_spaces(view):
                                                DEFAULT_IS_ENABLED))
     include_current_line = bool(ts_settings.get('trailing_spaces_include_current_line',
                                                 DEFAULT_IS_ENABLED))
-    offending_lines = view.find_all('[ \t]+$' if include_empty_lines else '(?<=\S)[\t ]+$')
+    regexp = ts_settings.get('trailing_spaces_regexp') + "$"
+    no_empty_lines_regexp = "(?<=\S)%s$" % regexp
+    offending_lines = view.find_all(regexp if include_empty_lines else no_empty_lines_regexp)
+
     if include_current_line:
         return offending_lines
     else:
-        current_offender = view.find('[ \t]+$' if include_empty_lines else '(?<=\S)[\t ]+$', line.a)
+        current_offender = view.find(regexp if include_empty_lines else no_empty_lines_regexp, line.a)
         removal = False if current_offender == None else line.intersects(current_offender)
         return [i for i in offending_lines if i != current_offender] if removal else offending_lines
 
