@@ -15,12 +15,17 @@ DEFAULT_MAX_FILE_SIZE = 1048576
 DEFAULT_COLOR_SCOPE_NAME = "invalid"
 DEFAULT_IS_ENABLED = True
 
-# Global settings object.
+# Global settings object and flags.
+# Flags duplicate some of the (core) JSON settings, in case the settings file has
+# been corrupted or is empty (ST2 really dislikes that!)
 ts_settings = None
 trailing_spaces_enabled = DEFAULT_IS_ENABLED
 startup_queue = []
 
-# Load settings and set whether the plugin is on or off.
+
+# Private: Loads settings and sets whether the plugin (live matching) is enabled.
+#
+# Returns nothing.
 def plugin_loaded():
     global ts_settings, trailing_spaces_enabled, startup_queue
     ts_settings = sublime.load_settings('trailing_spaces.sublime-settings')
@@ -30,21 +35,33 @@ def plugin_loaded():
         highlight_trailing_spaces(view)
 
 
-# Determine if the view is a find results view.
+# Private: Determine if the view is a "Find results" view.
+#
+# view - the view, you know
+#
+# Returns True or False.
 def is_find_results(view):
     return view.settings().get('syntax') and "Find Results" in view.settings().get('syntax')
 
 
-# Return an array of regions matching trailing spaces.
+# Private: Get the regions matching trailing spaces.
+#
+# As the core regexp matches lines, the regions are, well, "per lines".
+#
+# view - the view, you know
+#
+# Returns both the list of regions which map to trailing spaces and the list of
+# regions which are to be highlighted, as a list [matched, highlightable].
 def find_trailing_spaces(view):
     sel = view.sel()[0]
     line = view.line(sel.b)
-    include_empty_lines = bool(ts_settings.get('trailing_spaces_include_empty_lines',
+    include_empty_lines = bool(ts_settings.get("trailing_spaces_include_empty_lines",
                                                DEFAULT_IS_ENABLED))
-    include_current_line = bool(ts_settings.get('trailing_spaces_include_current_line',
+    include_current_line = bool(ts_settings.get("trailing_spaces_include_current_line",
                                                 DEFAULT_IS_ENABLED))
-    regexp = ts_settings.get('trailing_spaces_regexp') + "$"
+    regexp = ts_settings.get("trailing_spaces_regexp") + "$"
     no_empty_lines_regexp = "(?<=\S)%s$" % regexp
+
     offending_lines = view.find_all(regexp if include_empty_lines else no_empty_lines_regexp)
 
     if include_current_line:
@@ -128,6 +145,9 @@ class DeleteTrailingSpacesCommand(sublime_plugin.TextCommand):
         sublime.status_message(msg)
 
 
-# Call the plugin_loaded callback manually if on ST2.
+# ST3 features a plugin_loaded hook which is called when ST's API is ready.
+#
+# We must therefore call our init callback manually on ST2. It must be the last
+# thing in this plugin (thanks, beloved contributors!).
 if not int(sublime.version()) > 3000:
     plugin_loaded()
