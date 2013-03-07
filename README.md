@@ -1,70 +1,119 @@
-## Synopsis
+Trailing Spaces
+===============
 
-This is a [Sublime Text 2](http://www.sublimetext.com/2) plugin, with some support for ST3 as well
-(not official yet). It allows you to…
+A [Sublime Text 2](http://www.sublimetext.com/2) and
+[3](http://www.sublimetext.com/3) plugin that allows you to…
 
 **highlight trailing spaces and delete them in a flash!**
 
-ST2 provides a way to automatically delete trailing spaces *upon file save* (more on this at the end of this file).
-Depending on your settings, it may be more handy to just highlight them and/or
-delete them by hand, at any time. This plugin provides just that!
+Synopsis
+--------
 
-## Installation
+Sublime Text provides a way to automate deletion of trailing spaces *upon file
+saving* (more on this at the end of this file). Depending on your settings, it
+may be more handy to just highlight them and/or delete them by hand, at any
+time. This plugin provides just that, and a *lot* of options to fine-tune the
+way you want to decimate trailing spaces.
 
-It should be available through [Sublime Package Contol](http://wbond.net/sublime_packages/package_control) and
-this is the recommended way of installation.
+Installation
+------------
 
-You can still install from github if you want. Go to your `Packages` subdirectory under ST2's data directory:
+It is available through
+[Sublime Package Contol](http://wbond.net/sublime_packages/package_control) and
+this is the recommended way of installation (brings configuration instructions,
+automatic updates with changelogs…).
+
+### Alternative installation methods
+
+#### From github
+
+You can install from github if you want, although Package Control automates
+just that. Go to your `Packages` subdirectory under ST2's data directory:
 
 * Windows: `%APPDATA%\Sublime Text 2`
 * OS X: `~/Library/Application Support/Sublime Text 2`
 * Linux: `~/.config/sublime-text-2`
 * Portable Installation: `Sublime Text 2/Data`
 
-Then clone this repository with [git](http://git-scm.com):
+Then clone this repository:
 
     git clone git://github.com/SublimeText/TrailingSpaces.git
 
-That's it!
+#### Manually
 
-## Configuration
+[Download](https://github.com/SublimeText/TrailingSpaces/archive/master.zip)
+the plugin as a zip. Copy the *Trailing Spaces* directory to its location
+(see prior section).
 
-In order to use the deletion feature, one may either:
+Usage
+-----
 
-* go to "Edit / Delete Trailing Spaces";
-* bind the deletion command to a shortcut.
+### Deletion
 
-To add a key binding, you must define it into "Preferences / Key Bindings - User":
+The main feature you gain from using this plugin is that of deleting all
+trailing spaces in the currently edited document. In order to use this
+deletion feature, you may either:
+
+* click on "Edit / Trailing Spaces / Delete";
+* bind the deletion command to a keyboard shortcut:
+
+To add a key binding, open "Preferences / Key Bindings - User" and add:
 
 ``` js
 { "keys": ["ctrl+shift+t"], "command": "delete_trailing_spaces" }
 ```
 
-With this setting, pressing <kbd>Ctrl + Shift + t</kbd> will delete all trailing spaces at once in the current file!
-For OSX users, quoting wbond: "When porting a key binding across OSes, it is common for the ctrl key onWindows and
-Linux to be swapped out for super on OS X" (eg. use "super+ctrl+t" instead).
+With this setting, pressing <kbd>Ctrl + Shift + t</kbd> will delete all
+trailing spaces at once in the current file! For OSX users, quoting wbond:
+"When porting a key binding across OSes, it is common for the ctrl key on
+Windows and Linux to be swapped out for super on OS X"
+(eg. use "super+ctrl+t" instead).
 
-*Beware*: I like this shortcut, but it overrides the default ST's mapping for reopening last closed file. You can
-look at existing bindings in "Preferences / Key Bindings - Default".
+*Beware*: the binding from this example overrides the default ST's mapping
+for reopening last closed file. You can look at the default bindings in
+"Preferences / Key Bindings - Default".
 
-## Options
+### Toggling highlighting
 
-Several options are available to customize the plugin look 'n feel and behavior. The
-config keys goes into a specific settings file for this plugin.
-Go to "Preferences / Package Settings / Trailing Spaces / Settings - User" to add you custom settings.
-You can look at the default values in "Settings - Default" in the same menu.
+At any time, you can toggle highlighting on and off. You may either:
+
+- click on "Edit / Trailing Spaces / Highlight Regions"
+- bind the toggling command to a keyboard shortcut:
+
+``` js
+// I like "d", as in "detect" (overrides a default binding, though).
+{ "keys": ["ctrl+shift+d"], "command": "toggle_trailing_spaces" }
+```
+
+Options
+-------
+
+Several options are available to customize the plugin's behavior. Those
+settings are stored in a configuration file, as JSON. You must use a specific
+file: Go to "Preferences / Package Settings / Trailing Spaces / Settings
+- User" to add you custom settings. You can look at the default values in
+"Settings - Default", in the same menu.
+
+A few of them are also accessible through the "Edit / Trailing Spaces" menu.
+Sometimes, editing a setting will require a fresh Sublime Text to be applied
+properly, so try relaunching ST before reporting an issue ;)
+
+All settings are global (ie. applied to all opened documents).
 
 ### Changing the highlighting color
 
-You may change the highlighting color, providing a scope name such as "invalid", "comment"… just like that:
+*Default: "invalid"*
+
+You may change the highlighting color, providing a color scope name such as
+ "error", "comment"… just like that:
 
 ``` js
-{ "trailing_spaces_highlight_color": "invalid" }
+{ "trailing_spaces_highlight_color": "comment" }
 ```
 
-Actually, "invalid" is the default value. If you would like to use a custom color,
-it should be defined as a color scope in your current theme file. Here is a dummy, fully-fledged
-example (feel free to cut irrelevant pieces for your settings) of a custom color scope:
+The scope should be defined in your current theme file. Here is a dummy,
+fully-fledged example (feel free to cut irrelevant pieces for your settings)
+of such a custom color scope:
 
 ``` xml
 <dict>
@@ -84,98 +133,174 @@ example (feel free to cut irrelevant pieces for your settings) of a custom color
 </dict>
 ```
 
-And you would use the value of "invalid.illegal" in your setting to make use of your custom color.
+You would then use the value of "invalid.illegal".
 
-### Making it invisible
+### Keeping trailing spaces invisible
 
-You can make trailing spaces "invisible" and still rely on the deletion command. To do that, just
-set the highlighting color to an empty string:
+You can make trailing spaces "invisible" yet still rely on the deletion
+command. To do that, set the highlight scope to an empty string:
 
 ``` js
 { "trailing_spaces_highlight_color": "" }
 ```
 
-*Beware*: this is **not** the same as disabling the highlighting (see below). With this setting, the plugin still
-runs when opening a file and live afterwards, you just won't see the trailing spaces (they are highlighted with
-a "transparent color"). Most of the time, what you will want is "On-demand highlighting" (again, see below).
+Beware: this is **not** the same as *disabling* the highlighting (see "On-
+Demand Matching" below). With this setting, the plugin still runs when opening
+a file, and in the background afterwards; you just won't see the trailing
+spaces (they are being highlighted with a "transparent" color).
 
-### Disabling highlighting for large files
+### Include Current Line
 
-Highlighting may be disabled for large files, for it may cause slowness. The default threshold
-is around 1 million of characters. This is configurable (in "File Settings - User"); unit is number of chars:
+*Default: true*
 
-``` js
-{ "trailing_spaces_file_max_size": 1000}
-```
-
-Even though the trailing spaces are not highlighted, one can still delete them
-using the deletion command.
-
-### Disabling highlighting on the current line
-
-Highlighting trailing spaces for the currently edited line can be annoying and it is possible
-to disable it, so the warning color is not seen after every space character when adding to a
-line of code:
+Highlighting of trailing spaces in the currently edited line can be annoying:
+each time you are about to start a new word, the space you type is matched as
+a trailing spaces. Currently edited line can thus be ignored:
 
 ``` js
 { "trailing_spaces_include_current_line": false }
 ```
 
-Even though the trailing spaces are not highlighted, one can still delete them
-using the deletion command.
+Even though the trailing spaces are not highlighted on this line, they are
+still internally matched and will be delete when firing the deletion command.
 
-### On-demand highlighting / no highlighting
+### Include Empty Lines
 
-The highlighting feature is entirely optionnal: as long as you defined a mapping to the deletion
-command, you can run it and it will perform as expected, detecting and erasing all trailing spaces
-although they are not made "visible". You can disable highlighting with this setting:
+*Default: true*
+
+When firing the deletion command, empty lines are matched as trailing regions,
+and end up being deleted. You can specifically ignore them:
+
+``` js
+{ "trailing_spaces_include_empty_lines": false }
+```
+
+They will not be highlighted either.
+
+### Modified Lines Only
+
+*Default: false (reopen ST to update)*
+
+When firing the deletion command, trailing regions *in the entire document* are
+deleted. There are some use-cases when deleting trailing spaces *only on lines
+you edited* is smarter; for instance when commiting changes to some third-party
+source code.
+
+At any time, you can change which area is covered when deleting trailing
+regions. You may either:
+
+- click on "Edit / Trailing Spaces / Modified Lines Only"
+- specify as a setting:
+
+``` js
+{ "trailing_spaces_modified_lines_only": true }
+```
+
+### Trim On Save
+
+*Default: false*
+
+Setting this to `true` will ensure trailing spaces are deleted when you save
+your document. It abides by the other settings, such as *Modified Lines Only*.
+
+``` js
+{ "trailing_spaces_trim_on_save": true }
+```
+
+### Save After Trim
+
+*Default: false*
+
+You may not want to always trim trailing spaces on save, but the other way
+around could prove useful. Setting this to `true` will automatically save your
+document after you fire the deletion command:
+
+``` js
+{ "trailing_spaces_save_after_trim": true }
+```
+
+It is obviously ignored if *Trim On Save* is on.
+
+### Live Matching vs On-demand Matching
+
+*Default: true (reopen ST to update)*
+
+By default, trailing regions are matched every time you edit the document, and
+when you open it.
+
+This feature is entirely optional and you may set it off: firing the deletion
+command will cause the trailing spaces to be deleted as expected even though
+they were not matched prior to your request. If you are afraid of the plugin
+to cause slowness (for instance, you already installed several *heavy*
+plugins), you can disable live matching:
 
 ``` js
 { "trailing_spaces_enabled": false }
 ```
 
-Still, you may want to toggle highlighting, just to check them out. In order to do that, define a
-mapping to the toggling command:
+In this case, for no trailing regions are matched until you request them to be
+deleted, no highlighting occurs—it is in fact disabled, regardless of your
+"scope" setting. If you want to check the trailing spaces regions, you can
+toggle highlighting on and off. In this case, it may come in handy to define
+a binding for the toggling command. When "On-demand Matching" is on and some
+trailing spaces are highlighted, added ones will obviously not be. Toggling
+highlight off and on will refresh them.
+
+### For power-users only!
+
+#### Disabled for large files
+
+The plugin is disabled altogether for large files, for it may cause slowness.
+The default threshold is around 1 million of characters. This is
+configurable (in "File Settings - User") and the unit is number of chars:
 
 ``` js
-// I like "d", as in "detect".
-{ "keys": ["ctrl+shift+d"], "command": "toggle_trailing_spaces" }
+{ "trailing_spaces_file_max_size": 1000}
 ```
 
-----
+#### The matching pattern
 
-Oh, and for those who wonder: several options must be comma-separated, like this:
+*Default: [ \t]+*
+
+Trailing spaces are line-ending regions containing at least one simple space,
+tabs, or both. This pattern should be all you ever need, but if you *do* want
+to abide by another definition to cover edge-cases, go ahead:
 
 ``` js
-{
-  "option_1": value1,
-  "option_2": value2
-}
+// *danger* will match newline chars and many other folks
+"trailing_spaces_regexp": "[\\s]+"
 ```
 
-## Deleting trailing spaces upon file save / display whitespaces
+About Sublime Text's built-in features
+--------------------------------------
 
-Sublime Text is able to delete trailing spaces upon saving files. In order to enable this behavior, edit the
-"Preferences / Settings - User" file to add the following setting:
+Trailing Spaces is designed to be a drop-in replacement of the limited
+*Trim Whitespace On Save* built-in feature. ST is indeed able to delete
+trailing spaces upon saving files, and maybe that's all you need!
+
+In order to enable this behavior, edit "Preferences / Settings - User"
+to add the following:
 
 ``` js
 { "trim_trailing_white_space_on_save": true }
 ```
 
-This is of course compatible with using this plugin, and that is why it does not provide a redundant option
-for this specific behavior (it might change in the future, though).
+As Trailing Spaces bypasses this setting, you will have to uninstall it to
+benefit from this setting.
 
-Made a little less obvious in ST documentation are settings to display whitespaces (not only trailing ones!):
+Made a little less obvious in the documentation are settings to showcase
+whitespaces (*not only trailing ones!*):
 
 ``` js
 { "draw_white_space": "all" }
 ```
 
-And a setting to ensure a newline is kept at end of file upon saving:
+and to ensure a newline is kept at end of file upon saving:
 
 ``` js
 { "ensure_newline_at_eof_on_save": true }
 ```
 
-The former will display all whitespaces in your files. There is another value of "selection" which display whitespaces
-under, you got it, your current text selection.
+The former will display *all* whitespaces in your files. There is another value
+of "selection" which display whitespaces under (you got it) your current text
+selection.

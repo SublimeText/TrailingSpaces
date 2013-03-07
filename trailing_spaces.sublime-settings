@@ -1,28 +1,53 @@
 // Trailing Spaces' default settings.
 //
-// In order to tweak the settings, you should NOT edit this file, but instead the user-specific,
-// empsy-by-default version under "Preferences / Package Settings / Trailing Spaces / Settings - User".
+// In order to tweak the settings, you should NOT edit this file, but instead
+// the user-specific, empty-by-default version under "Preferences / Package
+// Settings / Trailing Spaces / Settings - User".
+//
 // See Trailing Spaces' README for detailled instructions.
 {
-    // By default, Trailing Spaces is enabled.
-    // Set to false to disable live matching and highlighting (the deletion command remains available).
+    // By default, Trailing Spaces is "live". It means the trailing spaces
+    // regions will be matched in the background, and highlighted if a color
+    // scope is defined, when the document is opened and edited.
+    // Set to false to disable live matching and highlighting (the deletion
+    // command remains available, so-called "lazy matching").
     "trailing_spaces_enabled" : true,
 
-    // Highlight color is specified as a scope. You may define and use a custom scope
-    // to better fit your colorscheme.
+    // Highlight color is specified as a scope. You may define and use a custom
+    // scope to better fit your colorscheme.
     "trailing_spaces_highlight_color" : "invalid",
 
-    // By default, empty lines are cleared as well when calling the deletion command.
+    // By default, empty lines are cleared as well when calling the deletion
+    // command.
     // Set to false to ignore empty lines upon deletion.
     "trailing_spaces_include_empty_lines" : true,
 
-    // By default, the line being currently edited will have its trailing spaces highlighted.
+    // By default, the line being currently edited will have its trailing
+    // spaces highlighted.
     // Set to false to ignore trailing spaces on the edited line.
     "trailing_spaces_include_current_line" : true,
 
+    // By default, trailing spaces are deleted within the whole document.
+    // Set to true to affect only the lines you edited since last save.
+    // Trailing spaces will still be searched for and highlighted in the whole
+    // document.
+    "trailing_spaces_modified_lines_only": false,
+
+    // By default, nothing happens on save.
+    // Set to true to trim trailing spaces before saving, with respect to the
+    // other settings.
+    "trailing_spaces_trim_on_save": false,
+
+    // By default, deleting trailing spaces does not cause the document to be
+    // saved.
+    // Set to true to force saving after trailing spaces have been deleted.
+    // This setting is irrelevant and will be ignored if trim_on_save is true.
+    "trailing_spaces_save_after_trim": false,
+
     // ---- NEXT SETTINGS ARE FOR POWER USERS ONLY! ----
 
-    // Highlighting will be disabled if the edited file's size is larger than this.
+    // Highlighting will be disabled if the edited file's size is larger than
+    // this.
     // Adjust the value (in number of chars) to whatever fits your performance.
     "trailing_spaces_file_max_size" : 1048576,
 
