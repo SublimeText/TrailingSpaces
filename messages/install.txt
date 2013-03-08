@@ -18,23 +18,23 @@ details are available in the documentation, and you can read it by clicking on
 "Preferences / Package Settings / Trailing Spaces / Help", or in a prettier form, by
 browsing https://github.com/SublimeText/TrailingSpaces.
 
-Key binding
+Key Binding
 ===========
 
 This plugin does not come with a default key binding for the deletion command. You can
 pick your own key binding and define it in "Preferences / Key Bindings - User", or just
 stick to using the menu entry under "Edit". Check the help for advice on this.
 
-Upgrades, issues
-================
+Upgrades & Issues
+=================
 
-Package Control will automatically upgrade all packages every time the editor is started,
-so there is nothing for you to worry about. If you however do find the plugin to not work
+Package Control will automatically update all packages every time the editor is started,
+so there is nothing for you to worry about. If you however do find the plugin not to work
 as it used to, head to the issues tracker (see links below) to report the problem.
 
-Useful links
+Useful Links
 ============
 
-* Documentation & code: https://github.com/SublimeText/TrailingSpaces
-* Report issues / request for new features: https://github.com/SublimeText/TrailingSpaces/issues
+* Documentation & Code: https://github.com/SublimeText/TrailingSpaces
+* Report issues / Request New Features / Roadmap: https://github.com/SublimeText/TrailingSpaces/issues
 * Follow me on twitter: @jdvauguet

@@ -1,0 +1,65 @@
+
+
+    Trailing Spaces update [v1.0.0]
+    -------------------------------
+
+    Hope you've been happy gaving trailin' a hard time so far.
+
+    I added several features to help you in this honorable quest…
+
+    All details accessible through:
+
+        "Preferences / Package Settings / Trailing Spaces / Help"
+
+
+
+New feature: Modified Lines Only
+================================
+
+As proposed by a fellow user, it is now possible to target only the lines
+modified by You and You Only when deleting trailing spaces.
+
+This feature will certainly please coders who edit third-party code filled
+with trailing spaces but do not want to commit giant diffs, just their little
+fix, while keeping it clean.
+
+New feature: Trim On Save
+=========================
+
+This option allows for automatic deletion upon saving. No more lost trailing
+spaces! A perfect combo to the "Modified Lines Only" setting I guess.
+
+New feature: Save After Trim
+============================
+
+A different kind of automation: many users just want those trailings out and
+forget 'bout them. It is now made even easier with this auto-saving hook. Fire
+the deletion command, and your document is clean on the hard drive!
+
+At the current time, "Trim On Save" and "Save After Trim" cannot be both
+enabled (the former wins), but this is on the roadmap.
+
+New Menu
+========
+
+Some of the settings seemed a bit more important than the others. Along the
+deletion command, the toggling command/state and the "Modified Lines Only"
+setting have been elected first-class citizens of the new "Edit / Trailing
+Spaces" menu. Any change made by click here is live, persistent and reflected
+in the JSON settings file. Settings are global to all open documents.
+
+Improvements & Misc.
+====================
+
+- Support for custom matching patterns (danger!).
+- Performance improvements (reduced overhead, with some room for further
+  improvements).
+- Better documentation (both code & user doc).
+- Lazy "On-demand" matching improved.
+
+Useful Links
+============
+
+* Documentation & Code: https://github.com/SublimeText/TrailingSpaces
+* Report issues / Request New Features / Roadmap: https://github.com/SublimeText/TrailingSpaces/issues
+* Follow me on twitter: @jdvauguet
