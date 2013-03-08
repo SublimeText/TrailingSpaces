@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.2",
+  "packages": [
+  {
+    "name": "TrailingSpaces",
+    "description": "Highlight trailing spaces and delete them in a flash.",
+    "author": "Jean-Denis Vauguet",
+    "homepage": "https://github.com/SublimeText/TrailingSpaces/",
+    "last_modified": "2013-03-08 01:00:00",
+    "platforms": {
+      "*": [
+        {
+          "version": "1.0.0",
+          "url": "https://nodeload.github.com/SublimeText/TrailingSpaces/zip/v1.0.0"
+        }
+      ]
+    }
+  }
+  ]
+}
