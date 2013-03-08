@@ -196,6 +196,13 @@ regions. You may either:
 { "trailing_spaces_modified_lines_only": true }
 ```
 
+There is also a command to toggle this feature on and off. You may thus define
+a key binding:
+
+``` js
+{ "keys": ["pick+a+shortcut"], "command": "toggle_trailing_spaces_modified_lines_only" }
+```
+
 ### Trim On Save
 
 *Default: false*
