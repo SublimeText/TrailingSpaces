@@ -16,6 +16,7 @@ import codecs
 DEFAULT_MAX_FILE_SIZE = 1048576
 DEFAULT_IS_ENABLED = True
 DEFAULT_MODIFIED_LINES_ONLY = False
+DEFAULT_REGEXP = "[ \t]+"
 
 # Global settings object and flags.
 # Flags duplicate some of the (core) JSON settings, in case the settings file has
@@ -87,7 +88,7 @@ def find_trailing_spaces(view):
                                                DEFAULT_IS_ENABLED))
     include_current_line = bool(ts_settings.get("trailing_spaces_include_current_line",
                                                 DEFAULT_IS_ENABLED))
-    regexp = ts_settings.get("trailing_spaces_regexp") + "$"
+    regexp = ts_settings.get("trailing_spaces_regexp", DEFAULT_REGEXP) + "$"
     no_empty_lines_regexp = "(?<=\S)%s$" % regexp
 
     offending_lines = view.find_all(regexp if include_empty_lines else no_empty_lines_regexp)
