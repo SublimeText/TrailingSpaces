@@ -6,6 +6,30 @@ A [Sublime Text 2](http://www.sublimetext.com/2) and
 
 **highlight trailing spaces and delete them in a flash!**
 
+---
+
+- [Synopsis](#synopsis)
+- [Installation](#installation)
+	- [Alternative installation methods](#alternative-installation-methods)
+		- [From github](#from-github)
+		- [Manually](#manually)
+- [Usage](#usage)
+	- [Deletion](#deletion)
+	- [Toggling highlighting](#toggling-highlighting)
+- [Options](#options)
+	- [Changing the highlighting color](#changing-the-highlighting-color)
+	- [Keeping trailing spaces invisible](#keeping-trailing-spaces-invisible)
+	- [Include Current Line](#include-current-line)
+	- [Include Empty Lines](#include-empty-lines)
+	- [Modified Lines Only](#modified-lines-only)
+	- [Trim On Save](#trim-on-save)
+	- [Save After Trim](#save-after-trim)
+	- [Live Matching vs On-demand Matching](#live-matching-vs-on-demand-matching)
+	- [For power-users only!](#for-power-users-only)
+		- [Disabled for large files](#disabled-for-large-files)
+		- [The matching pattern](#the-matching-pattern)
+- [About Sublime Text's built-in features](#about-sublime-texts-built-in-features)
+
 Synopsis
 --------
 
