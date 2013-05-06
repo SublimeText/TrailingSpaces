@@ -24,6 +24,7 @@ ts_settings_filename = "trailing_spaces.sublime-settings"
 ts_settings = None
 trailing_spaces_live_matching = DEFAULT_IS_ENABLED
 trim_modified_lines_only = DEFAULT_MODIFIED_LINES_ONLY
+trailing_spaces_syntax_ignore = []
 startup_queue = []
 on_disk = None
 
@@ -34,7 +35,7 @@ on_disk = None
 def plugin_loaded():
     global ts_settings_filename, ts_settings, trailing_spaces_live_matching
     global current_highlighting_scope, trim_modified_lines_only, startup_queue
-    global DEFAULT_COLOR_SCOPE_NAME, on_disk
+    global DEFAULT_COLOR_SCOPE_NAME, on_disk, trailing_spaces_syntax_ignore
 
     ts_settings = sublime.load_settings(ts_settings_filename)
     trailing_spaces_live_matching = bool(ts_settings.get("trailing_spaces_enabled",
@@ -44,6 +45,7 @@ def plugin_loaded():
     DEFAULT_COLOR_SCOPE_NAME = current_highlighting_scope
     trim_modified_lines_only = bool(ts_settings.get("trailing_spaces_modified_lines_only",
                                                     DEFAULT_MODIFIED_LINES_ONLY))
+    trailing_spaces_syntax_ignore = ts_settings.get('trailing_spaces_syntax_ignore', [])
 
     if trailing_spaces_live_matching:
         for view in startup_queue:
@@ -115,6 +117,10 @@ def match_trailing_spaces(view):
         startup_queue.append(view)
         return
 
+    # Silently pass ignored views.
+    if ignore_view(view):
+        return
+
     # Silently pass if file is too big.
     if max_size_exceeded(view):
         return
@@ -123,6 +129,24 @@ def match_trailing_spaces(view):
         (matched, highlightable) = find_trailing_spaces(view)
         add_trailing_spaces_regions(view, matched)
         highlight_trailing_spaces_regions(view, highlightable)
+
+
+# Private: Checks if the view should be ignored.
+#
+# view - the view to check.
+#
+# Returns True if the view should be ignored, False otherwise.
+def ignore_view(view):
+    view_syntax = view.settings().get('syntax');
+
+    if not view_syntax:
+        return False
+
+    for syntax_ignore in trailing_spaces_syntax_ignore:
+        if syntax_ignore in view_syntax:
+            return True
+
+    return False
 
 
 # Private: Checks whether the document is bigger than the max_size setting.
