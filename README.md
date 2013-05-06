@@ -287,7 +287,7 @@ An item has to match a case-sensitive substring of the syntax used in the view:
 
 ``` js
 // Views with a syntax that contains "Diff" are ignored
-{ "trailing_spaces_syntax_ignore": "["Diff"]"}
+{ "trailing_spaces_syntax_ignore": ["Diff"]}
 ```
 
 ### For power-users only!
