@@ -119,20 +119,10 @@ def match_trailing_spaces(view):
     if max_size_exceeded(view):
         return
 
-    # Only run in the active view. This avoids running in build results view.
-    if not view.window():
-        return
-
-    if view != view.window().active_view():
-        return
-
-    # Avoid running in find results view
-    if is_find_results(view):
-        return
-
-    (matched, highlightable) = find_trailing_spaces(view)
-    add_trailing_spaces_regions(view, matched)
-    highlight_trailing_spaces_regions(view, highlightable)
+    if not is_find_results(view):
+        (matched, highlightable) = find_trailing_spaces(view)
+        add_trailing_spaces_regions(view, matched)
+        highlight_trailing_spaces_regions(view, highlightable)
 
 
 # Private: Checks whether the document is bigger than the max_size setting.
