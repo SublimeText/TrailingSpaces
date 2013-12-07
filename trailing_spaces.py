@@ -384,6 +384,7 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
             match_trailing_spaces(view)
 
     def on_activated(self, view):
+        self.freeze_last_version(view)
         if trailing_spaces_live_matching:
             match_trailing_spaces(view)
 
@@ -391,14 +392,14 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
         if trailing_spaces_live_matching:
             match_trailing_spaces(view)
 
-    def on_activated(self, view):
-        self.freeze_last_version(view)
-        if trailing_spaces_live_matching:
-            match_trailing_spaces(view)
-
     def on_pre_save(self, view):
         self.freeze_last_version(view)
-        if ts_settings.get("trailing_spaces_trim_on_save"):
+
+        v_settings = view.settings()
+        if (
+            ts_settings.get("trailing_spaces_trim_on_save") or
+            v_settings.get("trailing_spaces_trim_on_save", False)
+        ):
             view.run_command("delete_trailing_spaces")
 
     # Toggling messes with what is red from the disk, and it breaks the diff
