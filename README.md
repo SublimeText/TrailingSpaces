@@ -115,7 +115,7 @@ Options
 Several options are available to customize the plugin's behavior. Those
 settings are stored in a configuration file, as JSON. You must use a specific
 file: Go to "Preferences / Package Settings / Trailing Spaces / Settings
-- User" to add you custom settings. You can look at the default values in
+\- User" to add you custom settings. You can look at the default values in
 "Settings - Default", in the same menu.
 
 A few of them are also accessible through the "Edit / Trailing Spaces" menu.
