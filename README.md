@@ -25,6 +25,7 @@ A [Sublime Text 2](http://www.sublimetext.com/2) and
 	- [Trim On Save](#trim-on-save)
 	- [Save After Trim](#save-after-trim)
 	- [Live Matching vs On-demand Matching](#live-matching-vs-on-demand-matching)
+	- [Ignore Syntax](#ignore-syntax)
 	- [For power-users only!](#for-power-users-only)
 		- [Disabled for large files](#disabled-for-large-files)
 		- [The matching pattern](#the-matching-pattern)
@@ -276,6 +277,18 @@ toggle highlighting on and off. In this case, it may come in handy to define
 a binding for the toggling command. When "On-demand Matching" is on and some
 trailing spaces are highlighted, added ones will obviously not be. Toggling
 highlight off and on will refresh them.
+
+### Ignore Syntax
+
+*Default: []*
+
+With this option you can ignore specific files/views based on the syntax used.
+An item has to match a case-sensitive substring of the syntax used in the view:
+
+``` js
+// Views with a syntax that contains "Diff" are ignored
+{ "trailing_spaces_syntax_ignore": ["Diff"]}
+```
 
 ### For power-users only!
 
