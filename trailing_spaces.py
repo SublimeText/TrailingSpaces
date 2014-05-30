@@ -302,7 +302,7 @@ def find_regions_to_delete(view):
         (regions, highlightable) = find_trailing_spaces(view)
 
     # Filtering is required in case triming is restricted to dirty regions only.
-    if trim_modified_lines_only:
+    if trim_modified_lines_only and on_disk is not None:
         modified_lines = get_modified_lines(view)
 
         # If there are no dirty lines, don't do nothing.
@@ -407,21 +407,19 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
         if trailing_spaces_live_matching:
             match_trailing_spaces(view)
 
-    def on_activated(self, view):
-        if trailing_spaces_live_matching:
-            match_trailing_spaces(view)
-
     def on_selection_modified(self, view):
         if trailing_spaces_live_matching:
             match_trailing_spaces(view)
 
     def on_activated(self, view):
-        self.freeze_last_version(view)
+        if trim_modified_lines_only:
+            self.freeze_last_version(view)
         if trailing_spaces_live_matching:
             match_trailing_spaces(view)
 
     def on_pre_save(self, view):
-        self.freeze_last_version(view)
+        if trim_modified_lines_only:
+            self.freeze_last_version(view)
         if ts_settings.get("trailing_spaces_trim_on_save"):
             view.run_command("delete_trailing_spaces")
 
@@ -437,7 +435,10 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
         # For some reasons, the on_activated hook gets fired on a ghost document
         # from time to time.
         if file_name:
-            on_disk = codecs.open(file_name, "r", "utf-8").read().splitlines()
+            try:
+                on_disk = codecs.open(file_name, "r", "utf-8").read().splitlines()
+            except FileNotFoundError:
+                on_disk = None
 
 
 # Public: Deletes the trailing spaces.
