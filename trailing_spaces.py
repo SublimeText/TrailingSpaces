@@ -103,7 +103,7 @@ def find_trailing_spaces(view):
         return [offending_lines, highlightable]
 
 
-# Private: Find the fraking trailing spaces in the view and flags them as such!
+# Private: Find the freaking trailing spaces in the view and flags them as such!
 #
 # It will refresh highlighted regions as well. Does not execute if the
 # document's size exceeds the file_max_size setting, or if the fired in a view
