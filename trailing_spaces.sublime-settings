@@ -4,7 +4,7 @@
 // the user-specific, empty-by-default version under "Preferences / Package
 // Settings / Trailing Spaces / Settings - User".
 //
-// See Trailing Spaces' README for detailled instructions.
+// See Trailing Spaces' README for detailed instructions.
 {
     // By default, Trailing Spaces is "live". It means the trailing spaces
     // regions will be matched in the background, and highlighted if a color
