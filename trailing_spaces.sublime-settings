@@ -14,7 +14,8 @@
     "trailing_spaces_enabled" : true,
 
     // Highlight color is specified as a scope. You may define and use a custom
-    // scope to better fit your colorscheme.
+    // scope to better fit your colorscheme. A value of empty string "" will
+    // make highlights invisible.
     "trailing_spaces_highlight_color" : "invalid",
 
     // By default, empty lines are cleared as well when calling the deletion
