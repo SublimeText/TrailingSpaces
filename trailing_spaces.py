@@ -12,6 +12,7 @@ import sublime
 import sublime_plugin
 import difflib
 import codecs
+import re
 
 DEFAULT_MAX_FILE_SIZE = 1048576
 DEFAULT_IS_ENABLED = True
@@ -437,7 +438,13 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
         # For some reasons, the on_activated hook gets fired on a ghost document
         # from time to time.
         if file_name:
-            on_disk = codecs.open(file_name, "r", "utf-8").read().splitlines()
+            # Default encoding
+            encoding = "UTF-8"
+            # Try to see if the view has a different encoding that UTF-8
+            nested_encoding = re.search("\(([^\)]+)\)", view.encoding())
+            if nested_encoding:
+                encoding = nested_encoding.group(1)
+            on_disk = codecs.open(file_name, "r", encoding).read().splitlines()
 
 
 # Public: Deletes the trailing spaces.
