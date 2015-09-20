@@ -37,7 +37,7 @@ on_disk = None
 def plugin_loaded():
     global ts_settings_filename, ts_settings, trailing_spaces_live_matching
     global current_highlighting_scope, trim_modified_lines_only, startup_queue
-    global DEFAULT_COLOR_SCOPE_NAME, on_disk, trailing_spaces_syntax_ignore
+    global DEFAULT_COLOR_SCOPE_NAME, trailing_spaces_syntax_ignore
 
     ts_settings = sublime.load_settings(ts_settings_filename)
     trailing_spaces_live_matching = bool(ts_settings.get("trailing_spaces_enabled",
@@ -418,12 +418,18 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
             match_trailing_spaces(view)
 
     def on_activated(self, view):
-        self.freeze_last_version(view)
+        global trim_modified_lines_only
+        if trim_modified_lines_only:
+            self.freeze_last_version(view)
+
         if trailing_spaces_live_matching:
             match_trailing_spaces(view)
 
     def on_pre_save(self, view):
-        self.freeze_last_version(view)
+        global trim_modified_lines_only
+        if trim_modified_lines_only:
+            self.freeze_last_version(view)
+
         if ts_settings.get("trailing_spaces_trim_on_save"):
             view.run_command("delete_trailing_spaces")
 
