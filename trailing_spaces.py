@@ -433,10 +433,12 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
     def freeze_last_version(self, view):
         global on_disk
 
+        # There are views with no associated path like scratch views created by
+        # plugins or newly created, but not yet saved views. Also, even if the
+        # view has a path, it might not be a real path. That's the case for
+        # files read from packages using sublime.load_resource() API.
         file_name = view.file_name()
-        # For some reasons, the on_activated hook gets fired on a ghost document
-        # from time to time.
-        if file_name:
+        if file_name and os.path.isfile(file_name):
             on_disk = codecs.open(file_name, "r", "utf-8").read().splitlines()
 
 
