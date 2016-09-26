@@ -5,10 +5,6 @@
 
     You're now ready to give trailing spaces *a hard time*!
 
-    Wait… I guess Package Control just introduced some of them :(
-    Why don't you try clicking "Edit / Trailing Spaces / Delete"?
-
-
 
 Documentation
 =============
