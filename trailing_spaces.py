@@ -73,6 +73,14 @@ def persist_settings():
 def is_find_results(view):
     return view.settings().get('syntax') and "Find Results" in view.settings().get('syntax')
 
+# Private: Determine if the view is a "Build results" view.
+#
+# view - the view, you know
+#
+# Returns True or False.
+def is_build_results(view):
+    return view.window() and view.window().get_view_index(view) == (-1, -1)
+
 
 # Private: Get the regions matching trailing spaces.
 #
@@ -125,7 +133,7 @@ def match_trailing_spaces(view):
     if max_size_exceeded(view):
         return
 
-    if not is_find_results(view):
+    if not is_find_results(view) and not is_build_results(view):
         (matched, highlightable) = find_trailing_spaces(view)
         add_trailing_spaces_regions(view, matched)
         highlight_trailing_spaces_regions(view, highlightable)
