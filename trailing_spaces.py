@@ -65,15 +65,6 @@ def persist_settings():
     sublime.save_settings(ts_settings_filename)
 
 
-# Private: Determine if the view is a "Find results" view.
-#
-# view - the view, you know
-#
-# Returns True or False.
-def is_find_results(view):
-    return view.settings().get('syntax') and "Find Results" in view.settings().get('syntax')
-
-
 # Private: Get the regions matching trailing spaces.
 #
 # As the core regexp matches lines, the regions are, well, "per lines".
@@ -93,14 +84,20 @@ def find_trailing_spaces(view):
     no_empty_lines_regexp = "(?<=\S)%s$" % regexp
 
     offending_lines = view.find_all(regexp if include_empty_lines else no_empty_lines_regexp)
+    ignored_scopes = ",".join(ts_settings.get("trailing_spaces_scope_ignore", []))
+    filtered_lines = []
+    for region in offending_lines:
+        if ignored_scopes and view.match_selector(region.begin(), ignored_scopes):
+            continue
+        filtered_lines.append(region)
 
     if include_current_line:
-        return [offending_lines, offending_lines]
+        return [filtered_lines, filtered_lines]
     else:
         current_offender = view.find(regexp if include_empty_lines else no_empty_lines_regexp, line.a)
         removal = False if current_offender == None else line.intersects(current_offender)
-        highlightable = [i for i in offending_lines if i != current_offender] if removal else offending_lines
-        return [offending_lines, highlightable]
+        highlightable = [i for i in filtered_lines if i != current_offender] if removal else filtered_lines
+        return [filtered_lines, highlightable]
 
 
 # Private: Find the freaking trailing spaces in the view and flags them as such!
@@ -125,10 +122,9 @@ def match_trailing_spaces(view):
     if max_size_exceeded(view):
         return
 
-    if not is_find_results(view):
-        (matched, highlightable) = find_trailing_spaces(view)
-        add_trailing_spaces_regions(view, matched)
-        highlight_trailing_spaces_regions(view, highlightable)
+    (matched, highlightable) = find_trailing_spaces(view)
+    add_trailing_spaces_regions(view, matched)
+    highlight_trailing_spaces_regions(view, highlightable)
 
 
 # Private: Checks if the view should be ignored.

@@ -28,6 +28,10 @@
     // Set to false to ignore trailing spaces on the edited line.
     "trailing_spaces_include_current_line" : true,
 
+    // By default, any lines in the Find Results and Build output are ignored
+    // Add/remove scopes in this list if you need to ignore other scopes.
+    "trailing_spaces_scope_ignore": ["text.find-in-files", "source.build_output"],
+
     // By default, trailing spaces are deleted within the whole document.
     // Set to true to affect only the lines you edited since last save.
     // Trailing spaces will still be searched for and highlighted in the whole

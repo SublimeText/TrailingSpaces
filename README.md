@@ -278,16 +278,22 @@ a binding for the toggling command. When "On-demand Matching" is on and some
 trailing spaces are highlighted, added ones will obviously not be. Toggling
 highlight off and on will refresh them.
 
-### Ignore Syntax
+### Ignore Scope
 
-*Default: []*
+*Default: ["text.find-in-files", "source.build_output"]*
 
-With this option you can ignore specific files/views based on the syntax used.
-An item has to match a case-sensitive substring of the syntax used in the view:
+With this option you can ignore lines being highlighted based on the scope of
+their trailing region.
+
+If at least one scope in the configured list must match a scope in the trailing
+region of the line, it won't be highlighted.
+
+By default, the scope under the mouse cursor is shown by pressing
+`Super+Alt+P` (OS X) or `Ctrl+Alt+Shift+P` (Windows, Linux)
 
 ``` js
-// Views with a syntax that contains "Diff" are ignored
-{ "trailing_spaces_syntax_ignore": ["Diff"]}
+// Trailing spaces for find results, build output and markdown are ignored
+{ "trailing_spaces_scope_ignore": ["text.find-in-files", "source.build_output", "text.html.markdown"] }
 ```
 
 ### For power-users only!
