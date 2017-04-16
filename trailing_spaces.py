@@ -437,7 +437,17 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
         # For some reasons, the on_activated hook gets fired on a ghost document
         # from time to time.
         if file_name:
-            on_disk = codecs.open(file_name, "r", "utf-8").read().splitlines()
+            # This is the default "fallback_encoding" for Sublime Text
+            # UTF-8 files without a BOM will otherwise default to this
+            if view.encoding() == "Western (Windows 1252)":
+                encoding = "windows-1252"
+            else:
+                encoding = "utf-8"
+
+            try:
+                on_disk = codecs.open(file_name, "r", encoding).read().splitlines()
+            except UnicodeDecodeError as e:
+                sublime.status_message("Invalid characters in {0}: {1}".format(file_name, e))
 
 
 # Public: Deletes the trailing spaces.
