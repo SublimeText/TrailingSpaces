@@ -285,7 +285,7 @@ highlight off and on will refresh them.
 With this option you can ignore lines being highlighted based on the scope of
 their trailing region.
 
-If at least one scope in the configured list must match a scope in the trailing
+If at least one scope in the configured list matches a scope in the trailing
 region of the line, it won't be highlighted.
 
 By default, the scope under the mouse cursor is shown by pressing
