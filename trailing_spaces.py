@@ -12,11 +12,13 @@ import sublime
 import sublime_plugin
 import difflib
 import codecs
+import re
 
 from os.path import isfile
 
 DEFAULT_MAX_FILE_SIZE = 1048576
 DEFAULT_IS_ENABLED = True
+DEFAULT_UPDATE_INTERVAL = 250
 DEFAULT_MODIFIED_LINES_ONLY = False
 
 # Global settings object and flags.
@@ -25,10 +27,14 @@ DEFAULT_MODIFIED_LINES_ONLY = False
 ts_settings_filename = "trailing_spaces.sublime-settings"
 ts_settings = None
 trailing_spaces_live_matching = DEFAULT_IS_ENABLED
+trailing_spaces_update_interval = DEFAULT_UPDATE_INTERVAL
 trim_modified_lines_only = DEFAULT_MODIFIED_LINES_ONLY
 trailing_spaces_syntax_ignore = []
 startup_queue = []
 on_disk = None
+
+# dictionary of currently active view ids and last visible regions
+active_views = {}
 
 
 # Private: Loads settings and sets whether the plugin (live matching) is enabled.
@@ -36,12 +42,15 @@ on_disk = None
 # Returns nothing.
 def plugin_loaded():
     global ts_settings_filename, ts_settings, trailing_spaces_live_matching
+    global trailing_spaces_update_interval
     global current_highlighting_scope, trim_modified_lines_only, startup_queue
     global DEFAULT_COLOR_SCOPE_NAME, trailing_spaces_syntax_ignore
 
     ts_settings = sublime.load_settings(ts_settings_filename)
     trailing_spaces_live_matching = bool(ts_settings.get("trailing_spaces_enabled",
                                          DEFAULT_IS_ENABLED))
+    trailing_spaces_update_interval = int(ts_settings.get("trailing_spaces_update_interval",
+                                          DEFAULT_UPDATE_INTERVAL))
     current_highlighting_scope = ts_settings.get("trailing_spaces_highlight_color",
                                                  "region.redish")
     DEFAULT_COLOR_SCOPE_NAME = current_highlighting_scope
@@ -58,6 +67,13 @@ def plugin_loaded():
             persist_settings()
 
 
+# Private: Makes sure all timers are stopped.
+#
+# Returns nothing.
+def plugin_unloaded():
+    # clear all active views to kill all timeouts
+    active_views.clear()
+
 # Private: Updates user's settings with in-memory values.
 #
 # Allows for persistent settings from the menu.
@@ -65,6 +81,23 @@ def plugin_loaded():
 # Returns nothing.
 def persist_settings():
     sublime.save_settings(ts_settings_filename)
+
+
+# Private: Returns all regions within region that match regex.
+#
+# view - the view, you know
+# region - the region to search
+# regex - the regex pattern to search for
+#
+# Returns all matching regions within region.
+def view_find_all_in_region(view, region, regex):
+    # find all matches in the region's text
+    text = view.substr(region)
+    matches = re.finditer(regex, text, re.MULTILINE)
+
+    # return the found positions translated to the region's starting position
+    results = [sublime.Region(m.start() + region.begin(), m.end() + region.begin()) for m in matches]
+    return results
 
 
 # Private: Get the regions matching trailing spaces.
@@ -81,9 +114,12 @@ def find_trailing_spaces(view):
     include_current_line = bool(ts_settings.get("trailing_spaces_include_current_line",
                                                 DEFAULT_IS_ENABLED))
     regexp = ts_settings.get("trailing_spaces_regexp") + "$"
-    no_empty_lines_regexp = "(?<=\\S)%s$" % regexp
 
-    offending_lines = view.find_all(regexp if include_empty_lines else no_empty_lines_regexp)
+    if not include_empty_lines:
+        regexp = "(?<=\\S)%s$" % regexp
+
+    # find all matches in the currently visible region
+    offending_lines = view_find_all_in_region(view, view.visible_region(), regexp)
     ignored_scopes = ",".join(ts_settings.get("trailing_spaces_scope_ignore", []))
     filtered_lines = []
     for region in offending_lines:
@@ -97,9 +133,10 @@ def find_trailing_spaces(view):
     if include_current_line or not line:
         return [filtered_lines, filtered_lines]
     else:
-        current_offender = view.find(regexp if include_empty_lines else no_empty_lines_regexp, line.a)
-        removal = False if current_offender is None else line.intersects(current_offender)
-        highlightable = [i for i in filtered_lines if i != current_offender] if removal else filtered_lines
+        # find all matches in the current line and exclude them from highlighting
+        current_offenders = view_find_all_in_region(view, line, regexp)
+        highlightable = [r for r in filtered_lines if r not in current_offenders]
+
         return [filtered_lines, highlightable]
 
 
@@ -416,8 +453,18 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
         if trim_modified_lines_only:
             self.freeze_last_version(view)
 
+        # track
+        active_views[view.id()] = view.visible_region()
+
         if trailing_spaces_live_matching:
             match_trailing_spaces(view)
+
+            # continuously watch view for changes to the visible region
+            self.update_view_on_scroll(view)
+
+    def on_deactivated(self, view):
+        # untrack
+        active_views.pop(view.id(), None)
 
     def on_pre_save(self, view):
         global trim_modified_lines_only
@@ -426,6 +473,17 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
 
         if ts_settings.get("trailing_spaces_trim_on_save"):
             view.run_command("delete_trailing_spaces")
+
+    def update_view_on_scroll(self, view):
+        # compare the currently visible region to the previous (if any) and
+        # update if there were changes
+        if view.visible_region() != active_views.get(view.id(), view.visible_region()):
+            match_trailing_spaces(view)
+            active_views[view.id()] = view.visible_region()
+
+        # continue only if the view is still active
+        if trailing_spaces_live_matching and view.id() in active_views:
+            sublime.set_timeout(lambda: self.update_view_on_scroll(view), trailing_spaces_update_interval)
 
     # Toggling messes with what is red from the disk, and it breaks the diff
     # used when modified_lines_only is true. Honestly, I don't know why (yet).
