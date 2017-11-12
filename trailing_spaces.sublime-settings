@@ -47,6 +47,13 @@
 
     // ---- NEXT SETTINGS ARE FOR POWER USERS ONLY! ----
 
+    // The number of characters before and after the visible region of text to
+    // include in the highlighting. This is useful to also show the highlighting
+    // immediately for text that just became visible through scrolling.
+    // Adjust the value (in the number of characters) to whatever fits your
+    // needs and performance.
+    "trailing_spaces_non_visible_highlighting" : 500,
+
     // This is the interval at which the active view is tested for changes
     // (due to scrolling) to update the highlighting of the currently visible
     // region of text.

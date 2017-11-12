@@ -18,6 +18,7 @@ from os.path import isfile
 
 DEFAULT_MAX_FILE_SIZE = 1048576
 DEFAULT_IS_ENABLED = True
+DEFAULT_NON_VISIBLE_HIGHLIGHTING = 500
 DEFAULT_UPDATE_INTERVAL = 250
 DEFAULT_MODIFIED_LINES_ONLY = False
 
@@ -27,6 +28,7 @@ DEFAULT_MODIFIED_LINES_ONLY = False
 ts_settings_filename = "trailing_spaces.sublime-settings"
 ts_settings = None
 trailing_spaces_live_matching = DEFAULT_IS_ENABLED
+trailing_spaces_non_visible_highlighting = DEFAULT_NON_VISIBLE_HIGHLIGHTING
 trailing_spaces_update_interval = DEFAULT_UPDATE_INTERVAL
 trim_modified_lines_only = DEFAULT_MODIFIED_LINES_ONLY
 trailing_spaces_syntax_ignore = []
@@ -42,13 +44,15 @@ active_views = {}
 # Returns nothing.
 def plugin_loaded():
     global ts_settings_filename, ts_settings, trailing_spaces_live_matching
-    global trailing_spaces_update_interval
+    global trailing_spaces_non_visible_highlighting, trailing_spaces_update_interval
     global current_highlighting_scope, trim_modified_lines_only, startup_queue
     global DEFAULT_COLOR_SCOPE_NAME, trailing_spaces_syntax_ignore
 
     ts_settings = sublime.load_settings(ts_settings_filename)
     trailing_spaces_live_matching = bool(ts_settings.get("trailing_spaces_enabled",
                                          DEFAULT_IS_ENABLED))
+    trailing_spaces_non_visible_highlighting = int(ts_settings.get("trailing_spaces_non_visible_highlighting",
+                                                   DEFAULT_UPDATE_INTERVAL))
     trailing_spaces_update_interval = int(ts_settings.get("trailing_spaces_update_interval",
                                           DEFAULT_UPDATE_INTERVAL))
     current_highlighting_scope = ts_settings.get("trailing_spaces_highlight_color",
@@ -118,8 +122,14 @@ def find_trailing_spaces(view):
     if not include_empty_lines:
         regexp = "(?<=\\S)%s$" % regexp
 
-    # find all matches in the currently visible region
-    offending_lines = view_find_all_in_region(view, view.visible_region(), regexp)
+    # find all matches in the currently visible region plus a little before and after
+    searched_region = view.visible_region()
+    searched_region.a = max(searched_region.a - trailing_spaces_non_visible_highlighting, 0)
+    searched_region.b = min(searched_region.b + trailing_spaces_non_visible_highlighting, view.size())
+
+    searched_region = view.line(searched_region)  # align to line start and end
+    offending_lines = view_find_all_in_region(view, searched_region, regexp)
+
     ignored_scopes = ",".join(ts_settings.get("trailing_spaces_scope_ignore", []))
     filtered_lines = []
     for region in offending_lines:
