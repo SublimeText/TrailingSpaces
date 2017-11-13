@@ -482,6 +482,10 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
         if ts_settings.get("trailing_spaces_trim_on_save"):
             view.run_command("delete_trailing_spaces")
 
+    def on_close(self, view):
+        # untrack
+        active_views.pop(view.id(), None)
+
     def update_view_on_scroll(self, view):
         # compare the currently visible region to the previous (if any) and
         # update if there were changes
