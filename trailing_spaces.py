@@ -464,18 +464,15 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
         if trim_modified_lines_only:
             self.freeze_last_version(view)
 
-        # track
-        active_views[view.id()] = view.visible_region()
-
         if trailing_spaces_live_matching:
             match_trailing_spaces(view)
 
             # continuously watch view for changes to the visible region
-            self.update_view_on_scroll(view)
+            if not view.id() in active_views:
+                # track
+                active_views[view.id()] = view.visible_region()
 
-    def on_deactivated(self, view):
-        # untrack
-        active_views.pop(view.id(), None)
+                self.update_view_on_scroll(view)
 
     def on_pre_save(self, view):
         global trim_modified_lines_only
