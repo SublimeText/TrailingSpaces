@@ -47,6 +47,13 @@
 
     // ---- NEXT SETTINGS ARE FOR POWER USERS ONLY! ----
 
+    // This is the interval at which the active view is tested for changes
+    // (due to scrolling) to update the highlighting of the currently visible
+    // region of text.
+    // Adjust the value (in milliseconds) to whatever fits your needs and
+    // performance.
+    "trailing_spaces_update_interval" : 250,
+
     // Highlighting will be disabled if the edited file's size is larger than
     // this.
     // Adjust the value (in number of chars) to whatever fits your performance.
