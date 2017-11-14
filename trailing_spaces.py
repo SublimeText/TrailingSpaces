@@ -487,6 +487,12 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
         active_views.pop(view.id(), None)
 
     def update_view_on_scroll(self, view):
+        # panel views don't trigger on_close but are also not valid anymore
+        # after being hidden, so try to detect these cases here
+        if view.size() == 0 and not view.file_name():
+            active_views.pop(view.id(), None)
+            return
+
         # compare the currently visible region to the previous (if any) and
         # update if there were changes
         if view.visible_region() != active_views.get(view.id(), view.visible_region()):
