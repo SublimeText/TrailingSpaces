@@ -425,7 +425,7 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
         if ts_settings.get("trailing_spaces_trim_on_save"):
             view.run_command("delete_trailing_spaces")
 
-    # Toggling messes with what is red from the disk, and it breaks the diff
+    # Toggling messes with what is read from the disk, and it breaks the diff
     # used when modified_lines_only is true. Honestly, I don't know why (yet).
     # Anyway, let's cache the persisted version of the document's buffer for
     # later use on specific event, so that we always have a decent version of
@@ -437,8 +437,11 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
         # For some reasons, the on_activated hook gets fired on a ghost document
         # from time to time.
         if file_name:
-            on_disk = codecs.open(file_name, "r", "utf-8").read().splitlines()
-
+            try:
+                on_disk = codecs.open(file_name, "r", "utf-8").read().splitlines()
+            except FileNotFoundError:
+                sublime.status_message('Unable to freeze last version; are you sure %s exists?' % file_name)
+                return
 
 # Public: Deletes the trailing spaces.
 class DeleteTrailingSpacesCommand(sublime_plugin.TextCommand):
