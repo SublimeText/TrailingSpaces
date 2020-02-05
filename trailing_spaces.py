@@ -13,6 +13,8 @@ import sublime_plugin
 import difflib
 import codecs
 
+from os.path import isfile
+
 DEFAULT_MAX_FILE_SIZE = 1048576
 DEFAULT_IS_ENABLED = True
 DEFAULT_MODIFIED_LINES_ONLY = False
@@ -436,7 +438,7 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
         file_name = view.file_name()
         # For some reasons, the on_activated hook gets fired on a ghost document
         # from time to time.
-        if file_name and not view.is_scratch():
+        if file_name and isfile(file_name) and not view.is_scratch():
             on_disk = codecs.open(file_name, "r", "utf-8").read().splitlines()
 
 
