@@ -438,7 +438,7 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
         file_name = view.file_name()
         # For some reasons, the on_activated hook gets fired on a ghost document
         # from time to time.
-        if file_name and isfile(file_name):
+        if file_name and isfile(file_name) and not view.is_scratch():
             on_disk = codecs.open(file_name, "r", "utf-8").read().splitlines()
 
 
