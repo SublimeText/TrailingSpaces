@@ -30,6 +30,9 @@ trailing_spaces_syntax_ignore = []
 startup_queue = []
 on_disk = None
 
+# NOTE: these are for trailing_spaces_unhilight_editing_line
+currently_modifying = {}
+last_modified_selection = {}
 
 # Private: Loads settings and sets whether the plugin (live matching) is enabled.
 #
@@ -91,18 +94,26 @@ def find_trailing_spaces(view):
                                                DEFAULT_IS_ENABLED))
     include_current_line = bool(ts_settings.get("trailing_spaces_include_current_line",
                                                 DEFAULT_IS_ENABLED))
+    unhilight_editing_line = bool(ts_settings.get("trailing_spaces_unhilight_editing_line",
+                                                False))
+
     regexp = ts_settings.get("trailing_spaces_regexp") + "$"
     no_empty_lines_regexp = "(?<=\S)%s$" % regexp
 
     offending_lines = view.find_all(regexp if include_empty_lines else no_empty_lines_regexp)
+    highlightable = offending_lines
 
-    if include_current_line:
-        return [offending_lines, offending_lines]
-    else:
+    if include_current_line and unhilight_editing_line:
+        # remove current line(s) from hilightings if editing
+        highlightable = [region for region in highlightable if 
+            view.rowcol(region.a)[0] not in currently_modifying[view.buffer_id()]]
+
+    elif not include_current_line:
         current_offender = view.find(regexp if include_empty_lines else no_empty_lines_regexp, line.a)
         removal = False if current_offender == None else line.intersects(current_offender)
         highlightable = [i for i in offending_lines if i != current_offender] if removal else offending_lines
-        return [offending_lines, highlightable]
+
+    return [offending_lines, highlightable]
 
 
 # Private: Find the freaking trailing spaces in the view and flags them as such!
@@ -406,6 +417,9 @@ class ToggleTrailingSpacesModifiedLinesOnlyCommand(sublime_plugin.WindowCommand)
 # current settings.
 class TrailingSpacesListener(sublime_plugin.EventListener):
     def on_modified(self, view):
+        last_modified_selection[view.buffer_id()] = [s for s in view.sel()]
+        currently_modifying[view.buffer_id()] = [view.rowcol(pos.a)[0] for pos in view.sel()]
+
         if trailing_spaces_live_matching:
             match_trailing_spaces(view)
 
@@ -414,10 +428,17 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
             match_trailing_spaces(view)
 
     def on_selection_modified(self, view):
+        # reset currently modifying lines if cursor changed place ("exit edit mode")
+        if [s for s in view.sel()] != last_modified_selection[view.buffer_id()]:
+            currently_modifying[view.buffer_id()] = set()
         if trailing_spaces_live_matching:
             match_trailing_spaces(view)
 
     def on_activated(self, view):
+        # initialize current buffer's important sets
+        currently_modifying[view.buffer_id()] = set()
+        last_modified_selection[view.buffer_id()] = set()
+
         self.freeze_last_version(view)
         if trailing_spaces_live_matching:
             match_trailing_spaces(view)
