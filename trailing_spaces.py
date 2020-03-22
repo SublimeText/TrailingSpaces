@@ -90,7 +90,7 @@ def find_trailing_spaces(view):
     include_current_line = bool(ts_settings.get("trailing_spaces_include_current_line",
                                                 DEFAULT_IS_ENABLED))
     regexp = ts_settings.get("trailing_spaces_regexp") + "$"
-    no_empty_lines_regexp = "(?<=\S)%s$" % regexp
+    no_empty_lines_regexp = "(?<=\\S)%s$" % regexp
 
     offending_lines = view.find_all(regexp if include_empty_lines else no_empty_lines_regexp)
 
@@ -101,7 +101,7 @@ def find_trailing_spaces(view):
         return [offending_lines, offending_lines]
     else:
         current_offender = view.find(regexp if include_empty_lines else no_empty_lines_regexp, line.a)
-        removal = False if current_offender == None else line.intersects(current_offender)
+        removal = False if current_offender is None else line.intersects(current_offender)
         highlightable = [i for i in offending_lines if i != current_offender] if removal else offending_lines
         return [offending_lines, highlightable]
 
@@ -140,7 +140,7 @@ def match_trailing_spaces(view):
 #
 # Returns True if the view should be ignored, False otherwise.
 def ignore_view(view):
-    view_syntax = view.settings().get('syntax');
+    view_syntax = view.settings().get('syntax')
 
     if not view_syntax:
         return False
@@ -283,7 +283,7 @@ def get_modified_lines(view):
     lines = []
     line_numbers = modified_lines_as_numbers(on_disk, on_buffer)
     if line_numbers:
-        lines = [view.full_line(view.text_point(number,0)) for number in line_numbers]
+        lines = [view.full_line(view.text_point(number, 0)) for number in line_numbers]
     return lines
 
 
@@ -346,6 +346,7 @@ def find_regions_to_delete(view):
         regions = only_those_with_trailing_spaces()
 
     return regions
+
 
 # Private: Deletes the trailing spaces regions.
 #
@@ -456,7 +457,7 @@ class DeleteTrailingSpacesCommand(sublime_plugin.TextCommand):
 
         if deleted:
             if ts_settings.get("trailing_spaces_save_after_trim") \
-            and not ts_settings.get("trailing_spaces_trim_on_save"):
+                    and not ts_settings.get("trailing_spaces_trim_on_save"):
                 sublime.set_timeout(lambda: self.save(self.view), 10)
 
             msg_parts = {"nbRegions": deleted,
