@@ -409,10 +409,6 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
         if trailing_spaces_live_matching:
             match_trailing_spaces(view)
 
-    def on_activated(self, view):
-        if trailing_spaces_live_matching:
-            match_trailing_spaces(view)
-
     def on_selection_modified(self, view):
         if trailing_spaces_live_matching:
             match_trailing_spaces(view)
