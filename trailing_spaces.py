@@ -85,8 +85,6 @@ def is_find_results(view):
 # Returns both the list of regions which map to trailing spaces and the list of
 # regions which are to be highlighted, as a list [matched, highlightable].
 def find_trailing_spaces(view):
-    sel = view.sel()[0]
-    line = view.line(sel.b)
     include_empty_lines = bool(ts_settings.get("trailing_spaces_include_empty_lines",
                                                DEFAULT_IS_ENABLED))
     include_current_line = bool(ts_settings.get("trailing_spaces_include_current_line",
@@ -96,7 +94,10 @@ def find_trailing_spaces(view):
 
     offending_lines = view.find_all(regexp if include_empty_lines else no_empty_lines_regexp)
 
-    if include_current_line:
+    sel = view.sel()
+    line = len(sel) and view.line(sel[0].b)
+
+    if include_current_line or not line:
         return [offending_lines, offending_lines]
     else:
         current_offender = view.find(regexp if include_empty_lines else no_empty_lines_regexp, line.a)
