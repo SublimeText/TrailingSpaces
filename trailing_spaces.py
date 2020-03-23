@@ -443,7 +443,8 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
         # For some reasons, the on_activated hook gets fired on a ghost document
         # from time to time.
         if file_name and not view.is_scratch() and isfile(file_name):
-            on_disk = codecs.open(file_name, "r", "utf-8").read().splitlines()
+            with codecs.open(file_name, "r", "utf-8") as f:
+                on_disk = f.read().splitlines()
 
 
 # Public: Deletes the trailing spaces.
