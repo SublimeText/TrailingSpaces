@@ -493,6 +493,11 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
             active_views.pop(view.id(), None)
             return
 
+        # remove views not currently visible
+        if not self.is_view_visible(view):
+            active_views.pop(view.id(), None)
+            return
+
         # compare the currently visible region to the previous (if any) and
         # update if there were changes
         if view.visible_region() != active_views.get(view.id(), view.visible_region()):
@@ -518,6 +523,29 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
         if file_name and not view.is_scratch() and isfile(file_name):
             with codecs.open(file_name, "r", "utf-8") as f:
                 on_disk = f.read().splitlines()
+
+    def is_view_visible(self, view):
+        window = view.window()
+        if not window:
+            return False
+
+        # see if this view is visible in its group
+        group = window.get_view_index(view)[0]
+        if group != -1:
+            return view.id() == window.active_view_in_group(group).id()
+
+        # check if this view is the active panel
+        active_panel = window.active_panel() or ""
+
+        # find_output_panel only works without the "output."" prefix
+        if active_panel.startswith("output."):
+            active_panel = active_panel[len("output."):]
+
+        panel_view = window.find_output_panel(active_panel)
+        if panel_view and view.id() == panel_view.id():
+            return True
+
+        return False
 
 
 # Public: Deletes the trailing spaces.
