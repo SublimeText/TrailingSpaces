@@ -501,7 +501,8 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
 
         # continue only if the view is still active
         if trailing_spaces_live_matching and view.id() in active_views:
-            sublime.set_timeout(lambda: self.update_view_on_scroll(view), trailing_spaces_update_interval)
+            sublime.set_timeout_async(lambda: self.update_view_on_scroll(view),
+                                      trailing_spaces_update_interval)
 
     # Toggling messes with what is red from the disk, and it breaks the diff
     # used when modified_lines_only is true. Honestly, I don't know why (yet).
