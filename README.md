@@ -1,8 +1,7 @@
 Trailing Spaces
 ===============
 
-A [Sublime Text 2](http://www.sublimetext.com/2) and
-[3](http://www.sublimetext.com/3) plugin that allows you to…
+A [Sublime Text](http://www.sublimetext.com) plugin that allows you to…
 
 **highlight trailing spaces and delete them in a flash!**
 
@@ -92,7 +91,7 @@ With this setting, pressing <kbd>Ctrl + Shift + t</kbd> will delete all
 trailing spaces at once in the current file! For OSX users, quoting wbond:
 "When porting a key binding across OSes, it is common for the ctrl key on
 Windows and Linux to be swapped out for super on OS X"
-(eg. use "super+ctrl+t" instead).
+(eg. use "super+shift+t" instead).
 
 *Beware*: the binding from this example overrides the default ST's mapping
 for reopening last closed file. You can look at the default bindings in
@@ -115,9 +114,8 @@ Options
 
 Several options are available to customize the plugin's behavior. Those
 settings are stored in a configuration file, as JSON. You must use a specific
-file: Go to "Preferences / Package Settings / Trailing Spaces / Settings
-\- User" to add you custom settings. You can look at the default values in
-"Settings - Default", in the same menu.
+file: Go to "Preferences / Package Settings / Trailing Spaces / Settings" to
+add you custom settings.
 
 A few of them are also accessible through the "Edit / Trailing Spaces" menu.
 Sometimes, editing a setting will require a fresh Sublime Text to be applied
@@ -328,7 +326,7 @@ Trailing Spaces is designed to be a drop-in replacement of the limited
 *Trim Whitespace On Save* built-in feature. ST is indeed able to delete
 trailing spaces upon saving files, and maybe that's all you need!
 
-In order to enable this behavior, edit "Preferences / Settings - User"
+In order to enable this behavior, edit "Preferences / Settings"
 to add the following:
 
 ``` js

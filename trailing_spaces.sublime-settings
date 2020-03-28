@@ -1,9 +1,5 @@
 // Trailing Spaces' default settings.
 //
-// In order to tweak the settings, you should NOT edit this file, but instead
-// the user-specific, empty-by-default version under "Preferences / Package
-// Settings / Trailing Spaces / Settings - User".
-//
 // See Trailing Spaces' README for detailed instructions.
 {
     // By default, Trailing Spaces is "live". It means the trailing spaces

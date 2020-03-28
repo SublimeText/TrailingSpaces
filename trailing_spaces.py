@@ -13,6 +13,8 @@ import sublime_plugin
 import difflib
 import codecs
 
+from os.path import isfile
+
 DEFAULT_MAX_FILE_SIZE = 1048576
 DEFAULT_IS_ENABLED = True
 DEFAULT_MODIFIED_LINES_ONLY = False
@@ -35,7 +37,7 @@ on_disk = None
 def plugin_loaded():
     global ts_settings_filename, ts_settings, trailing_spaces_live_matching
     global current_highlighting_scope, trim_modified_lines_only, startup_queue
-    global DEFAULT_COLOR_SCOPE_NAME, on_disk, trailing_spaces_syntax_ignore
+    global DEFAULT_COLOR_SCOPE_NAME, trailing_spaces_syntax_ignore
 
     ts_settings = sublime.load_settings(ts_settings_filename)
     trailing_spaces_live_matching = bool(ts_settings.get("trailing_spaces_enabled",
@@ -74,14 +76,12 @@ def persist_settings():
 # Returns both the list of regions which map to trailing spaces and the list of
 # regions which are to be highlighted, as a list [matched, highlightable].
 def find_trailing_spaces(view):
-    sel = view.sel()[0]
-    line = view.line(sel.b)
     include_empty_lines = bool(ts_settings.get("trailing_spaces_include_empty_lines",
                                                DEFAULT_IS_ENABLED))
     include_current_line = bool(ts_settings.get("trailing_spaces_include_current_line",
                                                 DEFAULT_IS_ENABLED))
     regexp = ts_settings.get("trailing_spaces_regexp") + "$"
-    no_empty_lines_regexp = "(?<=\S)%s$" % regexp
+    no_empty_lines_regexp = "(?<=\\S)%s$" % regexp
 
     offending_lines = view.find_all(regexp if include_empty_lines else no_empty_lines_regexp)
     ignored_scopes = ",".join(ts_settings.get("trailing_spaces_scope_ignore", []))
@@ -91,7 +91,10 @@ def find_trailing_spaces(view):
             continue
         filtered_lines.append(region)
 
-    if include_current_line:
+    sel = view.sel()
+    line = len(sel) and view.line(sel[0].b)
+
+    if include_current_line or not line:
         return [filtered_lines, filtered_lines]
     else:
         current_offender = view.find(regexp if include_empty_lines else no_empty_lines_regexp, line.a)
@@ -133,7 +136,7 @@ def match_trailing_spaces(view):
 #
 # Returns True if the view should be ignored, False otherwise.
 def ignore_view(view):
-    view_syntax = view.settings().get('syntax');
+    view_syntax = view.settings().get('syntax')
 
     if not view_syntax:
         return False
@@ -276,7 +279,7 @@ def get_modified_lines(view):
     lines = []
     line_numbers = modified_lines_as_numbers(on_disk, on_buffer)
     if line_numbers:
-        lines = [view.full_line(view.text_point(number,0)) for number in line_numbers]
+        lines = [view.full_line(view.text_point(number, 0)) for number in line_numbers]
     return lines
 
 
@@ -339,6 +342,7 @@ def find_regions_to_delete(view):
         regions = only_those_with_trailing_spaces()
 
     return regions
+
 
 # Private: Deletes the trailing spaces regions.
 #
@@ -403,21 +407,23 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
         if trailing_spaces_live_matching:
             match_trailing_spaces(view)
 
-    def on_activated(self, view):
-        if trailing_spaces_live_matching:
-            match_trailing_spaces(view)
-
     def on_selection_modified(self, view):
         if trailing_spaces_live_matching:
             match_trailing_spaces(view)
 
     def on_activated(self, view):
-        self.freeze_last_version(view)
+        global trim_modified_lines_only
+        if trim_modified_lines_only:
+            self.freeze_last_version(view)
+
         if trailing_spaces_live_matching:
             match_trailing_spaces(view)
 
     def on_pre_save(self, view):
-        self.freeze_last_version(view)
+        global trim_modified_lines_only
+        if trim_modified_lines_only:
+            self.freeze_last_version(view)
+
         if ts_settings.get("trailing_spaces_trim_on_save"):
             view.run_command("delete_trailing_spaces")
 
@@ -432,8 +438,9 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
         file_name = view.file_name()
         # For some reasons, the on_activated hook gets fired on a ghost document
         # from time to time.
-        if file_name:
-            on_disk = codecs.open(file_name, "r", "utf-8").read().splitlines()
+        if file_name and not view.is_scratch() and isfile(file_name):
+            with codecs.open(file_name, "r", "utf-8") as f:
+                on_disk = f.read().splitlines()
 
 
 # Public: Deletes the trailing spaces.
@@ -447,7 +454,7 @@ class DeleteTrailingSpacesCommand(sublime_plugin.TextCommand):
 
         if deleted:
             if ts_settings.get("trailing_spaces_save_after_trim") \
-            and not ts_settings.get("trailing_spaces_trim_on_save"):
+                    and not ts_settings.get("trailing_spaces_trim_on_save"):
                 sublime.set_timeout(lambda: self.save(self.view), 10)
 
             msg_parts = {"nbRegions": deleted,
