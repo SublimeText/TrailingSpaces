@@ -136,6 +136,9 @@ def match_trailing_spaces(view):
 #
 # Returns True if the view should be ignored, False otherwise.
 def ignore_view(view):
+    if view.is_scratch():
+        return True
+
     view_syntax = view.settings().get('syntax')
 
     if not view_syntax:
