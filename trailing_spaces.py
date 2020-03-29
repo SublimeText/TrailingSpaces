@@ -43,7 +43,7 @@ def plugin_loaded():
     trailing_spaces_live_matching = bool(ts_settings.get("trailing_spaces_enabled",
                                          DEFAULT_IS_ENABLED))
     current_highlighting_scope = ts_settings.get("trailing_spaces_highlight_color",
-                                                 "invalid")
+                                                 "region.redish")
     DEFAULT_COLOR_SCOPE_NAME = current_highlighting_scope
     trim_modified_lines_only = bool(ts_settings.get("trailing_spaces_modified_lines_only",
                                                     DEFAULT_MODIFIED_LINES_ONLY))

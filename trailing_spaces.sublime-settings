@@ -12,7 +12,7 @@
     // Highlight color is specified as a scope. You may define and use a custom
     // scope to better fit your colorscheme. A value of empty string "" will
     // make highlights invisible.
-    "trailing_spaces_highlight_color" : "invalid",
+    "trailing_spaces_highlight_color" : "region.redish",
 
     // By default, empty lines are cleared as well when calling the deletion
     // command.
