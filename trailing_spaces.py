@@ -109,10 +109,11 @@ def view_find_all_in_region(view, region, regex):
 # As the core regexp matches lines, the regions are, well, "per lines".
 #
 # view - the view, you know
+# scan_only_visible - whether to limit scanning to only visible region
 #
 # Returns both the list of regions which map to trailing spaces and the list of
 # regions which are to be highlighted, as a list [matched, highlightable].
-def find_trailing_spaces(view):
+def find_trailing_spaces(view, scan_only_visible=True):
     include_empty_lines = bool(ts_settings.get("trailing_spaces_include_empty_lines",
                                                DEFAULT_IS_ENABLED))
     include_current_line = bool(ts_settings.get("trailing_spaces_include_current_line",
@@ -122,13 +123,18 @@ def find_trailing_spaces(view):
     if not include_empty_lines:
         regexp = "(?<=\\S)%s$" % regexp
 
-    # find all matches in the currently visible region plus a little before and after
-    searched_region = view.visible_region()
-    searched_region.a = max(searched_region.a - trailing_spaces_non_visible_highlighting, 0)
-    searched_region.b = min(searched_region.b + trailing_spaces_non_visible_highlighting, view.size())
+    offending_lines = []
 
-    searched_region = view.line(searched_region)  # align to line start and end
-    offending_lines = view_find_all_in_region(view, searched_region, regexp)
+    if scan_only_visible:
+        # find all matches in the currently visible region plus a little before and after
+        searched_region = view.visible_region()
+        searched_region.a = max(searched_region.a - trailing_spaces_non_visible_highlighting, 0)
+        searched_region.b = min(searched_region.b + trailing_spaces_non_visible_highlighting, view.size())
+
+        searched_region = view.line(searched_region)  # align to line start and end
+        offending_lines = view_find_all_in_region(view, searched_region, regexp)
+    else:
+        offending_lines = view.find_all(regexp)
 
     ignored_scopes = ",".join(ts_settings.get("trailing_spaces_scope_ignore", []))
     filtered_lines = []
@@ -173,7 +179,6 @@ def match_trailing_spaces(view):
         return
 
     (matched, highlightable) = find_trailing_spaces(view)
-    add_trailing_spaces_regions(view, matched)
     highlight_trailing_spaces_regions(view, highlightable)
 
 
@@ -206,21 +211,6 @@ def ignore_view(view):
 def max_size_exceeded(view):
     return view.size() > ts_settings.get('trailing_spaces_file_max_size',
                                          DEFAULT_MAX_FILE_SIZE)
-
-
-# Private: Marks specified regions as trailing spaces.
-#
-# view - the view, you know
-# regions - regions qualified as trailing spaces
-#
-# Returns nothing.
-def add_trailing_spaces_regions(view, regions):
-    view.erase_regions('TrailingSpacesMatchedRegions')
-    view.add_regions('TrailingSpacesMatchedRegions',
-                     regions,
-                     "",
-                     "",
-                     sublime.HIDE_ON_MINIMAP)
 
 
 # Private: Highlights specified regions as trailing spaces.
@@ -343,12 +333,7 @@ def get_modified_lines(view):
 #
 # Returns a list of regions to be deleted.
 def find_regions_to_delete(view):
-    # If the plugin has been running in the background, regions have been matched.
-    # Otherwise, we must find trailing spaces right now!
-    if trailing_spaces_live_matching:
-        regions = view.get_regions('TrailingSpacesMatchedRegions')
-    else:
-        (regions, highlightable) = find_trailing_spaces(view)
+    (regions, highlightable) = find_trailing_spaces(view, scan_only_visible=False)
 
     # Filtering is required in case triming is restricted to dirty regions only.
     if trim_modified_lines_only:
