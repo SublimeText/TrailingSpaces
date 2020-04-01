@@ -91,17 +91,21 @@ def persist_settings():
 # Private: Returns all regions within region that match regex.
 #
 # view - the view, you know
-# region - the region to search
+# regions - a list of regions to search
 # regex - the regex pattern to search for
 #
-# Returns all matching regions within region.
-def view_find_all_in_region(view, region, regex):
-    # find all matches in the region's text
-    text = view.substr(region)
-    matches = re.finditer(regex, text, re.MULTILINE)
+# Returns all matching trailing regions within regions.
+def view_find_all_in_regions(view, regions, regex):
+    found = []
 
-    # return the found positions translated to the region's starting position
-    return [sublime.Region(m.start() + region.begin(), m.end() + region.begin()) for m in matches]
+    # find all matches in the region's text
+    for region in regions:
+        text = view.substr(region)
+        # translate positions to the region's starting position
+        matches = re.finditer(regex, text, re.MULTILINE)
+        found.extend(sublime.Region(m.start() + region.begin(), m.end() + region.begin()) for m in matches)
+
+    return found
 
 
 # Private: Get the regions matching trailing spaces.
@@ -123,7 +127,7 @@ def find_trailing_spaces(view, scan_only_visible=True):
     if not include_empty_lines:
         regexp = "(?<=\\S)%s$" % regexp
 
-    offending_lines = []
+    trailing_regions = []
 
     if scan_only_visible:
         # find all matches in the currently visible region plus a little before and after
@@ -132,28 +136,27 @@ def find_trailing_spaces(view, scan_only_visible=True):
         searched_region.b = min(searched_region.b + trailing_spaces_non_visible_highlighting, view.size())
 
         searched_region = view.line(searched_region)  # align to line start and end
-        offending_lines = view_find_all_in_region(view, searched_region, regexp)
+        trailing_regions = view_find_all_in_regions(view, [searched_region], regexp)
     else:
-        offending_lines = view.find_all(regexp)
+        trailing_regions = view.find_all(regexp)
 
     ignored_scopes = ",".join(ts_settings.get("trailing_spaces_scope_ignore", []))
-    filtered_lines = []
-    for region in offending_lines:
-        if ignored_scopes and view.match_selector(region.begin(), ignored_scopes):
-            continue
-        filtered_lines.append(region)
+    # filter out ignored scopes
+    trailing_regions = [
+        region for region in trailing_regions
+        if not ignored_scopes or not view.match_selector(region.begin(), ignored_scopes)
+    ]
 
     sel = view.sel()
-    line = len(sel) and view.line(sel[0].b)
 
-    if include_current_line or not line:
-        return [filtered_lines, filtered_lines]
+    if include_current_line or len(sel) == 0:
+        return [trailing_regions, trailing_regions]
     else:
+        selection_lines = [view.line(region.b) for region in sel]
         # find all matches in the current line and exclude them from highlighting
-        current_offenders = view_find_all_in_region(view, line, regexp)
-        highlightable = [r for r in filtered_lines if r not in current_offenders]
-
-        return [filtered_lines, highlightable]
+        selection_offenders = view_find_all_in_regions(view, selection_lines, regexp)
+        highlightable = [r for r in trailing_regions if r not in selection_offenders]
+        return [trailing_regions, highlightable]
 
 
 # Private: Find the freaking trailing spaces in the view and flags them as such!
