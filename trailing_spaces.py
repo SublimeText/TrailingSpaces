@@ -194,9 +194,9 @@ def ignore_view(view):
     if view.is_scratch():
         return True
 
-    view_syntax = view.settings().get('syntax')
+    view_settings = view.settings()
 
-    if not view_syntax:
+    if not view_settings.get('syntax') or view_settings.get('is_widget'):
         return False
 
     for syntax_ignore in trailing_spaces_syntax_ignore:
