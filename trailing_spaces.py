@@ -441,15 +441,15 @@ class ToggleTrailingSpacesModifiedLinesOnlyCommand(sublime_plugin.WindowCommand)
 # Public: Matches and highlights trailing spaces on key events, according to the
 # current settings.
 class TrailingSpacesListener(sublime_plugin.EventListener):
-    def on_modified(self, view):
+    def on_modified_async(self, view):
         if trailing_spaces_live_matching:
             match_trailing_spaces(view)
 
-    def on_selection_modified(self, view):
+    def on_selection_modified_async(self, view):
         if trailing_spaces_live_matching:
             match_trailing_spaces(view)
 
-    def on_activated(self, view):
+    def on_activated_async(self, view):
         global trim_modified_lines_only
         if trim_modified_lines_only:
             self.freeze_last_version(view)
