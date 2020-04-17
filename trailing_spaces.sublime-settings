@@ -7,43 +7,43 @@
     // scope is defined, when the document is opened and edited.
     // Set to false to disable live matching and highlighting (the deletion
     // command remains available, so-called "lazy matching").
-    "trailing_spaces_enabled" : true,
+    "enabled" : true,
 
     // Highlight color is specified as a scope. You may define and use a custom
     // scope to better fit your colorscheme. A value of empty string "" will
     // make highlights invisible.
-    "trailing_spaces_highlight_color" : "region.redish",
+    "highlight_color" : "region.redish",
 
     // By default, empty lines are cleared as well when calling the deletion
     // command.
     // Set to false to ignore empty lines upon deletion.
-    "trailing_spaces_include_empty_lines" : true,
+    "include_empty_lines" : true,
 
     // By default, the line being currently edited will have its trailing
     // spaces highlighted.
     // Set to false to ignore trailing spaces on the edited line.
-    "trailing_spaces_include_current_line" : true,
+    "include_current_line" : true,
 
     // By default, any lines in the Find Results Build output and Diff views are ignored
     // Add scopes to this list if you need to ignore them.
-    "trailing_spaces_scope_ignore": ["text.find-in-files", "source.build_output", "source.diff"],
+    "scope_ignore": ["text.find-in-files", "source.build_output", "source.diff"],
 
     // By default, trailing spaces are deleted within the whole document.
     // Set to true to affect only the lines you edited since last save.
     // Trailing spaces will still be searched for and highlighted in the whole
     // document.
-    "trailing_spaces_modified_lines_only": false,
+    "modified_lines_only": false,
 
     // By default, nothing happens on save.
     // Set to true to trim trailing spaces before saving, with respect to the
     // other settings.
-    "trailing_spaces_trim_on_save": false,
+    "trim_on_save": false,
 
     // By default, deleting trailing spaces does not cause the document to be
     // saved.
     // Set to true to force saving after trailing spaces have been deleted.
     // This setting is irrelevant and will be ignored if trim_on_save is true.
-    "trailing_spaces_save_after_trim": false,
+    "save_after_trim": false,
 
     // ---- NEXT SETTINGS ARE FOR POWER USERS ONLY! ----
 
@@ -52,20 +52,20 @@
     // immediately for text that just became visible through scrolling.
     // Adjust the value (in the number of characters) to whatever fits your
     // needs and performance.
-    "trailing_spaces_non_visible_highlighting" : 500,
+    "non_visible_highlighting" : 500,
 
     // This is the interval at which the active view is tested for changes
     // (due to scrolling) to update the highlighting of the currently visible
     // region of text.
     // Adjust the value (in milliseconds) to whatever fits your needs and
     // performance.
-    "trailing_spaces_update_interval" : 250,
+    "update_interval" : 250,
 
     // Highlighting will be disabled if the edited file's size is larger than
     // this.
     // Adjust the value (in number of chars) to whatever fits your performance.
-    "trailing_spaces_file_max_size" : 1048576,
+    "file_max_size" : 1048576,
 
     // By default, only simple spaces and tabs are matched as "trailing spaces".
-    "trailing_spaces_regexp": "[ \t]+"
+    "regexp": "[ \t]+"
 }

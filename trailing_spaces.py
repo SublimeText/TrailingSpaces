@@ -15,7 +15,14 @@ import codecs
 import re
 
 from os.path import isfile
-from .core.settings import Settings
+from collections import ChainMap
+from sublime_lib import NamedSettingsDict
+
+SETTINGS_FILENAME = 'trailing_spaces.sublime-settings'
+# Only need defaults for settings that are not exposed in default settings.
+DEFAULT_SETTINGS = {
+    'syntax_ignore': [],
+}
 
 # dictionary of currently active view ids and last visible regions
 active_views = {}
@@ -25,24 +32,30 @@ startup_queue = []
 # Highlight color as defined in settings. Plugin mutates that setting when disabled so
 # that has to be stored.
 INITIAL_HIGHLIGHT_COLOR = None
-settings = Settings()
+settings = None
 
 
 def plugin_loaded():
-    global current_highlight_color, startup_queue, INITIAL_HIGHLIGHT_COLOR
+    global settings, current_highlight_color, startup_queue, INITIAL_HIGHLIGHT_COLOR
 
-    settings.initialize()
+    # A settings layer that handled settings that included `trailing_spaces_` prefix (now deprecated).
+    class DeprecatedSettingsDict(NamedSettingsDict):
+        def __getitem__(self, key):
+            return super().__getitem__('trailing_spaces_%s' % key)
 
-    current_highlight_color = settings.get_highlight_color()
+    deprecated_settings = DeprecatedSettingsDict(SETTINGS_FILENAME)
+    settings = ChainMap(deprecated_settings, NamedSettingsDict(SETTINGS_FILENAME), DEFAULT_SETTINGS)
+
+    current_highlight_color = settings['highlight_color']
     INITIAL_HIGHLIGHT_COLOR = current_highlight_color
 
-    if settings.get_enabled():
+    if settings['enabled']:
         for view in startup_queue:
             match_trailing_spaces(view)
     else:
         current_highlight_color = ""
-        if settings.get_highlight_color() != current_highlight_color:
-            settings.persist()
+        if settings['highlight_color'] != current_highlight_color:
+            settings[0].save()
 
 
 # Private: Makes sure all timers are stopped.
@@ -55,7 +68,6 @@ def plugin_unloaded():
     active_views.clear()
     startup_queue = []
     on_disk = None
-    settings.deinitialize()
 
 
 # Private: Returns all regions within region that match regex.
@@ -88,29 +100,29 @@ def view_find_all_in_regions(view, regions, regex):
 # Returns both the list of regions which map to trailing spaces and the list of
 # regions which are to be highlighted, as a list [matched, highlightable].
 def find_trailing_spaces(view, scan_only_visible=True):
-    include_empty_lines = settings.get_include_empty_lines()
-    include_current_line = settings.get_include_current_line()
-    regexp = settings.get_regexp() + "$"
+    include_empty_lines = settings['include_empty_lines']
+    include_current_line = settings['include_current_line']
+    regexp = settings['regexp'] + "$"
 
     if not include_empty_lines:
         regexp = "(?<=\\S)%s$" % regexp
 
     trailing_regions = []
 
-    trailing_spaces_non_visible_highlighting = settings.get_non_visible_highlighting()
+    non_visible_highlighting = settings['non_visible_highlighting']
 
     if scan_only_visible:
         # find all matches in the currently visible region plus a little before and after
         searched_region = view.visible_region()
-        searched_region.a = max(searched_region.a - trailing_spaces_non_visible_highlighting, 0)
-        searched_region.b = min(searched_region.b + trailing_spaces_non_visible_highlighting, view.size())
+        searched_region.a = max(searched_region.a - non_visible_highlighting, 0)
+        searched_region.b = min(searched_region.b + non_visible_highlighting, view.size())
 
         searched_region = view.line(searched_region)  # align to line start and end
         trailing_regions = view_find_all_in_regions(view, [searched_region], regexp)
     else:
         trailing_regions = view.find_all(regexp)
 
-    ignored_scopes = ",".join(settings.get_scope_ignore())
+    ignored_scopes = ",".join(settings['scope_ignore'])
     # filter out ignored scopes
     trailing_regions = [
         region for region in trailing_regions
@@ -139,7 +151,7 @@ def find_trailing_spaces(view, scan_only_visible=True):
 #
 # Returns nothing.
 def match_trailing_spaces(view):
-    if not settings.is_initialized:
+    if not settings:
         startup_queue.append(view)
         return
 
@@ -169,7 +181,7 @@ def ignore_view(view):
     if not view_settings.get('syntax') or view_settings.get('is_widget'):
         return False
 
-    for syntax_ignore in settings.get_syntax_ignore():
+    for syntax_ignore in settings['syntax_ignore']:
         if syntax_ignore in view_syntax:
             return True
 
@@ -182,7 +194,7 @@ def ignore_view(view):
 #
 # Returns True or False.
 def max_size_exceeded(view):
-    return view.size() > settings.get_file_max_size()
+    return view.size() > settings['file_max_size']
 
 
 # Private: Highlights specified regions as trailing spaces.
@@ -218,7 +230,7 @@ def toggle_highlighting(view):
 
     # If performing live, highlighted trailing regions must be updated
     # internally.
-    if not settings.get_enabled():
+    if not settings['enabled']:
         (matched, highlightable) = find_trailing_spaces(view)
         highlight_trailing_spaces_regions(view, highlightable)
 
@@ -308,7 +320,7 @@ def find_regions_to_delete(view):
     (regions, highlightable) = find_trailing_spaces(view, scan_only_visible=False)
 
     # Filtering is required in case triming is restricted to dirty regions only.
-    if settings.get_modified_lines_only():
+    if settings['modified_lines_only']:
         modified_lines = get_modified_lines(view)
 
         # If there are no dirty lines, don't do nothing.
@@ -380,8 +392,8 @@ class ToggleTrailingSpacesCommand(sublime_plugin.WindowCommand):
             return
 
         state = toggle_highlighting(view)
-        settings.set_highlight_color(current_highlight_color)
-        settings.persist()
+        settings['highlight_color'] = current_highlight_color
+        settings[0].save()
         sublime.status_message('Highlighting of trailing spaces is %s' % state)
 
     def is_checked(self):
@@ -391,34 +403,34 @@ class ToggleTrailingSpacesCommand(sublime_plugin.WindowCommand):
 # Public: Toggles "Modified Lines Only" mode on or off.
 class ToggleTrailingSpacesModifiedLinesOnlyCommand(sublime_plugin.WindowCommand):
     def run(self):
-        was_on = settings.get_modified_lines_only()
-        settings.set_modified_lines_only(not was_on)
-        settings.persist()
+        was_on = settings['modified_lines_only']
+        settings['modified_lines_only'] = not was_on
+        settings[0].save()
 
         message = "Let's trim trailing spaces everywhere" if was_on \
                   else "Let's trim trailing spaces only on modified lines"
         sublime.status_message(message)
 
     def is_checked(self):
-        return settings.get_modified_lines_only()
+        return settings['modified_lines_only']
 
 
 # Public: Matches and highlights trailing spaces on key events, according to the
 # current settings.
 class TrailingSpacesListener(sublime_plugin.EventListener):
     def on_modified_async(self, view):
-        if settings.get_enabled():
+        if settings['enabled']:
             match_trailing_spaces(view)
 
     def on_selection_modified_async(self, view):
-        if settings.get_enabled():
+        if settings['enabled']:
             match_trailing_spaces(view)
 
     def on_activated_async(self, view):
-        if settings.get_modified_lines_only():
+        if settings['modified_lines_only']:
             self.freeze_last_version(view)
 
-        if settings.get_enabled():
+        if settings['enabled']:
             match_trailing_spaces(view)
 
             # continuously watch view for changes to the visible region
@@ -428,10 +440,10 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
                 self.update_on_region_change(view)
 
     def on_pre_save(self, view):
-        if settings.get_modified_lines_only():
+        if settings['modified_lines_only']:
             self.freeze_last_version(view)
 
-        if settings.get_trim_on_save():
+        if settings['trim_on_save']:
             view.run_command("delete_trailing_spaces")
 
     def on_close(self, view):
@@ -451,9 +463,9 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
             active_views[view.id()] = view.visible_region()
 
         # continue only if the view is still active
-        if settings.get_enabled() and view.id() in active_views:
+        if settings['enabled'] and view.id() in active_views:
             sublime.set_timeout_async(lambda: self.update_on_region_change(view),
-                                      settings.get_update_interval())
+                                      settings['update_interval'])
 
     # Toggling messes with what is red from the disk, and it breaks the diff
     # used when modified_lines_only is true. Honestly, I don't know why (yet).
@@ -509,7 +521,7 @@ class DeleteTrailingSpacesCommand(sublime_plugin.TextCommand):
         deleted = delete_trailing_regions(self.view, edit)
 
         if deleted:
-            if settings.get_save_after_trim() and not settings.get_trim_on_save():
+            if settings['save_after_trim'] and not settings['trim_on_save']:
                 sublime.set_timeout(lambda: self.save(self.view), 10)
 
             msg_parts = {"nbRegions": deleted,
