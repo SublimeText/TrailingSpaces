@@ -28,7 +28,6 @@ DEFAULT_SETTINGS = {
 active_views = {}
 current_highlight_color = None
 on_disk = None
-startup_queue = []
 # Highlight color as defined in settings. Plugin mutates that setting when disabled so
 # that has to be stored.
 INITIAL_HIGHLIGHT_COLOR = None
@@ -36,7 +35,7 @@ settings = None
 
 
 def plugin_loaded():
-    global settings, current_highlight_color, startup_queue, INITIAL_HIGHLIGHT_COLOR
+    global settings, current_highlight_color, INITIAL_HIGHLIGHT_COLOR
 
     # A settings layer that handled settings that included `trailing_spaces_` prefix (now deprecated).
     class DeprecatedSettingsDict(NamedSettingsDict):
@@ -49,11 +48,7 @@ def plugin_loaded():
     current_highlight_color = settings['highlight_color']
     INITIAL_HIGHLIGHT_COLOR = current_highlight_color
 
-    if settings['enabled']:
-        for view in startup_queue:
-            match_trailing_spaces(view)
-        startup_queue = []
-    else:
+    if not settings['enabled']:
         current_highlight_color = ""
         if settings['highlight_color'] != current_highlight_color:
             settings[0].save()
@@ -63,11 +58,10 @@ def plugin_loaded():
 #
 # Returns nothing.
 def plugin_unloaded():
-    global startup_queue, on_disk
+    global on_disk
 
     # clear all active views to kill all timeouts
     active_views.clear()
-    startup_queue = []
     on_disk = None
 
 
@@ -152,10 +146,6 @@ def find_trailing_spaces(view, scan_only_visible=True):
 #
 # Returns nothing.
 def match_trailing_spaces(view):
-    if not settings:
-        startup_queue.append(view)
-        return
-
     # Silently pass ignored views.
     if ignore_view(view):
         return
