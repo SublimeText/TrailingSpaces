@@ -52,6 +52,7 @@ def plugin_loaded():
     if settings['enabled']:
         for view in startup_queue:
             match_trailing_spaces(view)
+        startup_queue = []
     else:
         current_highlight_color = ""
         if settings['highlight_color'] != current_highlight_color:
