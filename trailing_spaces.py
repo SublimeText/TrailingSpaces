@@ -168,8 +168,9 @@ def ignore_view(view):
         return True
 
     view_settings = view.settings()
+    view_syntax = view_settings.get('syntax')
 
-    if not view_settings.get('syntax') or view_settings.get('is_widget'):
+    if not view_syntax or view_settings.get('is_widget'):
         return False
 
     for syntax_ignore in settings['syntax_ignore']:
