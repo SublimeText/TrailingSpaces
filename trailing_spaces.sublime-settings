@@ -24,7 +24,7 @@
     // Set to false to ignore trailing spaces on the edited line.
     "include_current_line" : true,
 
-    // By default, any lines in the Find Results, Build output, Diff and markdown views are ignored
+    // By default, any lines in the Find Results, Build output, Diff and Markdown views are ignored
     // Add scopes to this list if you need to ignore them.
     "scope_ignore": ["text.find-in-files", "source.build_output", "source.diff", "text.html.markdown"],
 
