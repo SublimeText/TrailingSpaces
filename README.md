@@ -278,7 +278,7 @@ highlight off and on will refresh them.
 
 ### Ignore Scope
 
-*Default: ["text.find-in-files", "source.build_output", "source.diff"]*
+*Default: ["text.find-in-files", "source.build_output", "source.diff", "text.html.markdown"]*
 
 With this option you can ignore lines being highlighted based on the scope of
 their trailing region.
@@ -290,8 +290,8 @@ By default, the scope under the mouse cursor is shown by pressing
 `Option+Command+P` (OS X) or `Ctrl+Alt+Shift+P` (Windows, Linux)
 
 ``` js
-// Trailing spaces for find results, build output and markdown are ignored
-{ "scope_ignore": ["text.find-in-files", "source.build_output", "text.html.markdown"] }
+// Trailing spaces for Find Results, Build output, Diff and Markdown are ignored
+{ "scope_ignore": ["text.find-in-files", "source.build_output", "source.diff", "text.html.markdown"] }
 ```
 
 ### For power-users only!
