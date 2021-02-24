@@ -31,6 +31,7 @@ on_disk = None
 # Highlight color as defined in settings. Plugin mutates that setting when disabled so
 # that has to be stored.
 INITIAL_HIGHLIGHT_COLOR = None
+HIGHLIGHT_REGION_KEY = 'TrailingSpacesHighlightedRegions'
 settings = None
 
 
@@ -198,12 +199,9 @@ def max_size_exceeded(view):
 #
 # Returns nothing.
 def highlight_trailing_spaces_regions(view, regions):
-    view.erase_regions("TrailingSpacesHighlightedRegions")
-    view.add_regions('TrailingSpacesHighlightedRegions',
-                     regions,
-                     current_highlight_color or "",
-                     "",
-                     sublime.HIDE_ON_MINIMAP)
+    view.erase_regions(HIGHLIGHT_REGION_KEY)
+    if regions:
+        view.add_regions(HIGHLIGHT_REGION_KEY, regions, current_highlight_color or "", "", sublime.HIDE_ON_MINIMAP)
 
 
 # Private: Toggles highlighting of all trailing spaces in the view.
@@ -228,7 +226,7 @@ def toggle_highlighting(view):
 
     scope = INITIAL_HIGHLIGHT_COLOR if current_highlight_color == "" else ""
     current_highlight_color = scope
-    highlight_trailing_spaces_regions(view, view.get_regions('TrailingSpacesHighlightedRegions'))
+    highlight_trailing_spaces_regions(view, view.get_regions(HIGHLIGHT_REGION_KEY))
     return "off" if current_highlight_color == "" else "on"
 
 
