@@ -1,0 +1,81 @@
+{
+  "contributions": {
+    "settings": [
+      {
+        "file_patterns": [
+          "/trailing_spaces.sublime-settings"
+        ],
+        "schema": {
+          "$id": "sublime://settings/TrailingSpaces",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "markdownDescription": "By default, Trailing Spaces is \"live\". It means the trailing spaces regions will be matched in the background, and highlighted if a color scope is defined, when the document is opened and edited. Set to false to disable live matching and highlighting (the deletion command remains available, so-called \"lazy matching\")."
+            },
+            "highlight_color": {
+              "type": "string",
+              "default": "region.redish",
+              "markdownDescription": "Highlight color is specified as a scope. You may define and use a custom scope to better fit your colorscheme. A value of empty string `\"\"` will make highlights invisible."
+            },
+            "include_empty_lines": {
+              "type": "boolean",
+              "default": true,
+              "markdownDescription": "By default, empty lines are cleared as well when calling the deletion command. Set to ` to ignore empty lines upon deletion."
+            },
+            "include_current_line": {
+              "type": "boolean",
+              "default": true,
+              "markdownDescription": "By default, the line being currently edited will have its trailing spaces highlighted. Set to `false` to ignore trailing spaces on the edited line."
+            },
+            "scope_ignore": {
+              "type": "array",
+              "default": ["text.find-in-files", "source.build_output", "source.diff", "text.html.markdown"],
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true,
+              "markdownDescription": "By default, any lines in the Find Results, Build output, Diff and Markdown views are ignored. Add scopes to this list if you need to ignore them."
+            },
+            "modified_lines_only": {
+              "type": "boolean",
+              "default": false,
+              "markdownDescription": "By default, trailing spaces are deleted within the whole document. Set to `true` to affect only the lines you edited since last save. Trailing spaces will still be searched for and highlighted in the whole document."
+            },
+            "trim_on_save": {
+              "type": "boolean",
+              "default": false,
+              "markdownDescription": "By default, nothing happens on save. Set to `true` to trim trailing spaces before saving, with respect to the other settings."
+            },
+            "save_after_trim": {
+              "type": "boolean",
+              "default": false,
+              "markdownDescription": "By default, deleting trailing spaces does not cause the document to be saved. Set to `true` to force saving after trailing spaces have been deleted. This setting is irrelevant and will be ignored if `trim_on_save` is `true`."
+            },
+            "non_visible_highlighting": {
+              "type": "number",
+              "default": 500,
+              "markdownDescription": "The number of characters before and after the visible region of text to include in the highlighting. This is useful to also show the highlighting immediately for text that just became visible through scrolling. Adjust the value (in the number of characters) to whatever fits your needs and performance."
+            },
+            "update_interval": {
+              "type": "number",
+              "default": 250,
+              "markdownDescription": "This is the interval at which the active view is tested for changes (due to scrolling) to update the highlighting of the currently visible region of text. Adjust the value (in milliseconds) to whatever fits your needs and performance."
+            },
+            "file_max_size": {
+              "type": "number",
+              "default": 1048576,
+              "markdownDescription": "Highlighting will be disabled if the edited file's size is larger than this. Adjust the value (in number of chars) to whatever fits your performance."
+            },
+            "regexp": {
+              "type": "string",
+              "default": "[ \\t]+",
+              "markdownDescription": "By default, only simple spaces and tabs are matched as \"trailing spaces\"."
+            },
+          },
+          "additionalProperties": false
+        }
+      }
+    ]
+  }
+}
