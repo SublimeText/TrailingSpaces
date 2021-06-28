@@ -469,6 +469,18 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
         # For some reasons, the on_activated hook gets fired on a ghost document
         # from time to time.
         if file_name and not view.is_scratch() and isfile(file_name):
+            encoding = view.encoding()
+
+            if encoding == "Undefined":
+                encoding = view.settings().get("default_encoding", "UTF-8")
+
+            if encoding == "Hexadecimal":  # not supported?
+                on_disk = None
+                return
+
+            if "(" in encoding:
+                encoding = encoding.split("(")[1].split(")")[0]
+
             with codecs.open(file_name, "r", "utf-8") as f:
                 on_disk = f.read().splitlines()
 
