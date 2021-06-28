@@ -465,12 +465,15 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
         if file_name and not view.is_scratch() and isfile(file_name):
             encoding = view.encoding()
 
+            if encoding == "Undefined":
+                encoding = view.settings().get("default_encoding", "UTF-8")
+
             if encoding == "Hexadecimal":  # not supported?
                 on_disk = None
                 return
 
-            match = re.match(r'.+\(([^)]+)\)$', view.encoding())
-            encoding = match.group(1) if match else view.settings().get("default_encoding", "UTF-8")
+            match = re.match(r'.+\(([^)]+)\)$', encoding)
+            encoding = match.group(1) if match else encoding
 
             with codecs.open(file_name, "r", encoding) as f:
                 on_disk = f.read().splitlines()
