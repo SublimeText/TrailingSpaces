@@ -283,13 +283,7 @@ def modified_lines_as_numbers(old, new):
 #
 # Returns the list of regions matching dirty lines.
 def get_modified_lines(view):
-    try:
-        on_disk
-        on_buffer = view.substr(sublime.Region(0, view.size())).splitlines()
-    except UnicodeDecodeError:
-        sublime.status_message("File format incompatible with this feature (UTF-8 files only)")
-        return
-
+    on_buffer = view.substr(sublime.Region(0, view.size())).splitlines()
     lines = []
     line_numbers = modified_lines_as_numbers(on_disk, on_buffer)
     if line_numbers:
@@ -471,15 +465,12 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
         if file_name and not view.is_scratch() and isfile(file_name):
             encoding = view.encoding()
 
-            if encoding == "Undefined":
-                encoding = view.settings().get("default_encoding", "UTF-8")
-
             if encoding == "Hexadecimal":  # not supported?
                 on_disk = None
                 return
 
-            if "(" in encoding:
-                encoding = encoding.split("(")[1].split(")")[0]
+            match = re.match(r'.+\(([^)]+)\)$', view.encoding())
+            encoding = match.group(1) if match else view.settings().get("default_encoding", "UTF-8")
 
             with codecs.open(file_name, "r", encoding) as f:
                 on_disk = f.read().splitlines()
