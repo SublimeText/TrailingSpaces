@@ -481,7 +481,7 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
             if "(" in encoding:
                 encoding = encoding.split("(")[1].split(")")[0]
 
-            with codecs.open(file_name, "r", "utf-8") as f:
+            with codecs.open(file_name, "r", encoding) as f:
                 on_disk = f.read().splitlines()
 
     def is_view_visible(self, view):
