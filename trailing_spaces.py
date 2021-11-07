@@ -256,6 +256,8 @@ def clear_trailing_spaces_highlight(window):
 #
 # Returns the list of edited line numbers.
 def modified_lines_as_numbers(old, new):
+    if old is None:
+        old = []
     d = difflib.Differ()
     diffs = d.compare(old, new)
 
