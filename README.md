@@ -52,12 +52,12 @@ automatic updates with changelogs…).
 #### From github
 
 You can install from github if you want, although Package Control automates
-just that. Go to your `Packages` subdirectory under ST2's data directory:
+just that. Go to your `Packages` subdirectory under Sublime Text's data directory:
 
-* Windows: `%APPDATA%\Sublime Text 2`
-* OS X: `~/Library/Application Support/Sublime Text 2`
-* Linux: `~/.config/sublime-text-2`
-* Portable Installation: `Sublime Text 2/Data`
+* Windows: `%APPDATA%\Sublime Text`
+* OS X: `~/Library/Application Support/Sublime Text`
+* Linux: `~/.config/sublime-text`
+* Portable Installation: `Sublime Text/Data`
 
 Then clone this repository:
 
