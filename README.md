@@ -52,16 +52,10 @@ automatic updates with changelogs…).
 #### From github
 
 You can install from github if you want, although Package Control automates
-just that. Go to your `Packages` subdirectory under Sublime Text's data directory:
+just that. Go to your `Packages` directory (find out where it is by running
+`Preferences: Browse Packages` from The _Command Palette_) and clone this repository:
 
-* Windows: `%APPDATA%\Sublime Text`
-* OS X: `~/Library/Application Support/Sublime Text`
-* Linux: `~/.config/sublime-text`
-* Portable Installation: `Sublime Text/Data`
-
-Then clone this repository:
-
-    git clone git://github.com/SublimeText/TrailingSpaces.git
+    git clone https://github.com/SublimeText/TrailingSpaces.git
 
 #### Manually
 
