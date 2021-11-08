@@ -285,7 +285,7 @@ def modified_lines_as_numbers(old, new):
 def get_modified_lines(view):
     on_buffer = view.substr(sublime.Region(0, view.size())).splitlines()
     lines = []
-    line_numbers = modified_lines_as_numbers(on_disk, on_buffer)
+    line_numbers = modified_lines_as_numbers(on_disk or [], on_buffer)
     if line_numbers:
         lines = [view.full_line(view.text_point(number, 0)) for number in line_numbers]
     return lines
