@@ -24,7 +24,7 @@ A [Sublime Text](http://www.sublimetext.com) plugin that allows you to…
 	- [Trim On Save](#trim-on-save)
 	- [Save After Trim](#save-after-trim)
 	- [Live Matching vs On-demand Matching](#live-matching-vs-on-demand-matching)
-	- [Ignore Syntax](#ignore-syntax)
+	- [Ignore Scope](#ignore-scope)
 	- [For power-users only!](#for-power-users-only)
 		- [Disabled for large files](#disabled-for-large-files)
 		- [The matching pattern](#the-matching-pattern)

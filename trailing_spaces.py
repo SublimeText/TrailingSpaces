@@ -491,7 +491,10 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
         # see if this view is visible in its group
         group = window.get_view_index(view)[0]
         if group != -1:
-            return view.id() == window.active_view_in_group(group).id()
+            active_view_in_group = window.active_view_in_group(group)
+            # won't be present if a html sheet is active
+            if active_view_in_group:
+                return view.id() == active_view_in_group.id()
 
         # check if this view is the active panel
         active_panel = window.active_panel() or ""
