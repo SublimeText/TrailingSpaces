@@ -33,18 +33,20 @@ on_disk = None
 INITIAL_HIGHLIGHT_COLOR = None
 HIGHLIGHT_REGION_KEY = 'TrailingSpacesHighlightedRegions'
 settings = None
+named_settings = None
 
 
 def plugin_loaded():
-    global settings, current_highlight_color, INITIAL_HIGHLIGHT_COLOR
+    global settings, named_settings, current_highlight_color, INITIAL_HIGHLIGHT_COLOR
 
-    # A settings layer that handled settings that included `trailing_spaces_` prefix (now deprecated).
+    # A settings layer that handles settings with the `trailing_spaces_` prefix (now deprecated).
     class DeprecatedSettingsDict(NamedSettingsDict):
         def __getitem__(self, key):
             return super().__getitem__('trailing_spaces_%s' % key)
 
     deprecated_settings = DeprecatedSettingsDict(SETTINGS_FILENAME)
-    settings = ChainMap(deprecated_settings, NamedSettingsDict(SETTINGS_FILENAME), DEFAULT_SETTINGS)
+    named_settings = NamedSettingsDict(SETTINGS_FILENAME)
+    settings = ChainMap(deprecated_settings, named_settings, DEFAULT_SETTINGS)
 
     current_highlight_color = settings['highlight_color']
     INITIAL_HIGHLIGHT_COLOR = current_highlight_color
@@ -52,7 +54,7 @@ def plugin_loaded():
     if not settings['enabled']:
         current_highlight_color = ""
         if settings['highlight_color'] != current_highlight_color:
-            settings[0].save()
+            named_settings.save()
 
 
 # Private: Makes sure all timers are stopped.
@@ -376,8 +378,8 @@ class ToggleTrailingSpacesCommand(sublime_plugin.WindowCommand):
             return
 
         state = toggle_highlighting(view)
-        settings['highlight_color'] = current_highlight_color
-        settings[0].save()
+        named_settings['highlight_color'] = current_highlight_color
+        named_settings.save()
         sublime.status_message('Highlighting of trailing spaces is %s' % state)
 
     def is_checked(self):
@@ -388,8 +390,8 @@ class ToggleTrailingSpacesCommand(sublime_plugin.WindowCommand):
 class ToggleTrailingSpacesModifiedLinesOnlyCommand(sublime_plugin.WindowCommand):
     def run(self):
         was_on = settings['modified_lines_only']
-        settings['modified_lines_only'] = not was_on
-        settings[0].save()
+        named_settings['modified_lines_only'] = not was_on
+        named_settings.save()
 
         message = "Let's trim trailing spaces everywhere" if was_on \
                   else "Let's trim trailing spaces only on modified lines"
