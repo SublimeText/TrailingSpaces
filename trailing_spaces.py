@@ -10,6 +10,7 @@ See README.md for details.
 
 from .settings import TrailingSpacesSettings
 from os.path import isfile
+from typing import Dict, List, Literal, Tuple, Union, cast
 import codecs
 import difflib
 import re
@@ -17,7 +18,7 @@ import sublime
 import sublime_plugin
 
 # dictionary of currently active view ids and last visible regions
-active_views = {}
+active_views: Dict[int, sublime.Region] = {}
 current_highlight_color = ''
 on_disk = None
 # Highlight color as defined in settings. Plugin mutates that setting when disabled so
@@ -27,7 +28,7 @@ HIGHLIGHT_REGION_KEY = 'TrailingSpacesHighlightedRegions'
 settings = TrailingSpacesSettings()
 
 
-def plugin_loaded():
+def plugin_loaded() -> None:
     global current_highlight_color, INITIAL_HIGHLIGHT_COLOR
 
     settings.load()
@@ -44,7 +45,7 @@ def plugin_loaded():
 # Private: Makes sure all timers are stopped.
 #
 # Returns nothing.
-def plugin_unloaded():
+def plugin_unloaded() -> None:
     global on_disk
 
     # clear all active views to kill all timeouts
@@ -59,8 +60,8 @@ def plugin_unloaded():
 # regex - the regex pattern to search for
 #
 # Returns all matching trailing regions within regions.
-def view_find_all_in_regions(view, regions, regex):
-    found = []
+def view_find_all_in_regions(view: sublime.View, regions: List[sublime.Region], regex: str) -> List[sublime.Region]:
+    found: List[sublime.Region] = []
 
     # find all matches in the region's text
     for region in regions:
@@ -81,7 +82,9 @@ def view_find_all_in_regions(view, regions, regex):
 #
 # Returns both the list of regions which map to trailing spaces and the list of
 # regions which are to be highlighted, as a list [matched, highlightable].
-def find_trailing_spaces(view, scan_only_visible=True):
+def find_trailing_spaces(
+    view: sublime.View, scan_only_visible: bool = True
+) -> Tuple[List[sublime.Region], List[sublime.Region]]:
     include_empty_lines = settings.include_empty_lines
     include_current_line = settings.include_current_line
     regexp = settings.regexp + "$"
@@ -89,7 +92,7 @@ def find_trailing_spaces(view, scan_only_visible=True):
     if not include_empty_lines:
         regexp = "(?<=\\S)%s$" % regexp
 
-    trailing_regions = []
+    trailing_regions: List[sublime.Region] = []
 
     non_visible_highlighting = settings.non_visible_highlighting
 
@@ -114,13 +117,13 @@ def find_trailing_spaces(view, scan_only_visible=True):
     sel = view.sel()
 
     if include_current_line or len(sel) == 0:
-        return [trailing_regions, trailing_regions]
+        return (trailing_regions, trailing_regions)
     else:
         selection_lines = [view.line(region.b) for region in sel]
         # find all matches in the current line and exclude them from highlighting
         selection_offenders = view_find_all_in_regions(view, selection_lines, regexp)
         highlightable = [r for r in trailing_regions if r not in selection_offenders]
-        return [trailing_regions, highlightable]
+        return (trailing_regions, highlightable)
 
 
 # Private: Find the freaking trailing spaces in the view and flags them as such!
@@ -132,7 +135,7 @@ def find_trailing_spaces(view, scan_only_visible=True):
 # view - the view, you know
 #
 # Returns nothing.
-def match_trailing_spaces(view):
+def match_trailing_spaces(view: sublime.View) -> None:
     # Silently pass ignored views.
     if ignore_view(view):
         return
@@ -150,14 +153,14 @@ def match_trailing_spaces(view):
 # view - the view to check.
 #
 # Returns True if the view should be ignored, False otherwise.
-def ignore_view(view):
+def ignore_view(view: sublime.View) -> bool:
     if view.is_scratch():
         return True
 
     view_settings = view.settings()
     view_syntax = view_settings.get('syntax')
 
-    if not view_syntax or view_settings.get('is_widget'):
+    if not isinstance(view_syntax, str) or view_settings.get('is_widget'):
         return False
 
     for syntax_ignore in settings.syntax_ignore:
@@ -172,7 +175,7 @@ def ignore_view(view):
 # view - the view, you know
 #
 # Returns True or False.
-def max_size_exceeded(view):
+def max_size_exceeded(view: sublime.View) -> bool:
     return view.size() > settings.file_max_size
 
 
@@ -184,7 +187,7 @@ def max_size_exceeded(view):
 # regions - regions qualified as trailing spaces
 #
 # Returns nothing.
-def highlight_trailing_spaces_regions(view, regions):
+def highlight_trailing_spaces_regions(view: sublime.View, regions: List[sublime.Region]) -> None:
     view.erase_regions(HIGHLIGHT_REGION_KEY)
     if regions:
         view.add_regions(HIGHLIGHT_REGION_KEY, regions, current_highlight_color or "", "", sublime.HIDE_ON_MINIMAP)
@@ -197,7 +200,7 @@ def highlight_trailing_spaces_regions(view, regions):
 # view - the view, you know
 #
 # Returns True (highlighting was turned on) or False (turned off).
-def toggle_highlighting(view):
+def toggle_highlighting(view: sublime.View) -> Literal['disabled!', 'off', 'on']:
     global current_highlight_color
 
     # If the scope is that of an invisible, there is nothing to toggle.
@@ -223,7 +226,7 @@ def toggle_highlighting(view):
 # window - the window, you know
 #
 # Returns nothing.
-def clear_trailing_spaces_highlight(window):
+def clear_trailing_spaces_highlight(window: sublime.Window) -> None:
     for view in window.views():
         view.erase_regions('TrailingSpacesMatchedRegions')
 
@@ -241,7 +244,7 @@ def clear_trailing_spaces_highlight(window):
 # new - a buffer of lines, as in "new version"
 #
 # Returns the list of edited line numbers.
-def modified_lines_as_numbers(old, new):
+def modified_lines_as_numbers(old: List[str], new: List[str]) -> Union[Literal[False], List[int]]:
     d = difflib.Differ()
     diffs = d.compare(old, new)
 
@@ -251,7 +254,7 @@ def modified_lines_as_numbers(old, new):
     #   - the line is only in b: it qualifies as an edited line!
     # Starting from -1 as ST2 is internally 0-based for lines.
     lineNum = -1
-    edited_lines = []
+    edited_lines: List[int] = []
     for line in diffs:
         code = line[:2]
         # those lines with "? " are not real! watch out!
@@ -268,7 +271,7 @@ def modified_lines_as_numbers(old, new):
 # view - the view, you know
 #
 # Returns the list of regions matching dirty lines.
-def get_modified_lines(view):
+def get_modified_lines(view: sublime.View) -> List[sublime.Region]:
     on_buffer = view.substr(sublime.Region(0, view.size())).splitlines()
     lines = []
     line_numbers = modified_lines_as_numbers(on_disk or [], on_buffer)
@@ -286,7 +289,7 @@ def get_modified_lines(view):
 # view - the view, you know
 #
 # Returns a list of regions to be deleted.
-def find_regions_to_delete(view):
+def find_regions_to_delete(view: sublime.View) -> List[sublime.Region]:
     (regions, highlightable) = find_trailing_spaces(view, scan_only_visible=False)
 
     # Filtering is required in case triming is restricted to dirty regions only.
@@ -295,7 +298,7 @@ def find_regions_to_delete(view):
 
         # If there are no dirty lines, don't do nothing.
         if not modified_lines:
-            return
+            return []
 
         # Super-private: filters trailing spaces regions to dirty lines only.
         #
@@ -314,9 +317,9 @@ def find_regions_to_delete(view):
         # we can re-create and store a Region for the relevant trailing spaces boundaries.
         #
         # Returns the filtered list of trailing spaces regions for the modified lines set.
-        def only_those_with_trailing_spaces():
-            regions_by_begin = {}
-            matches = []
+        def only_those_with_trailing_spaces() -> List[sublime.Region]:
+            regions_by_begin: Dict[sublime.Point, Tuple[sublime.Point, sublime.Point]] = {}
+            matches: List[sublime.Region] = []
             for region in regions:
                 begin = view.line(region).begin()
                 regions_by_begin[begin] = (region.begin(), region.end())
@@ -339,7 +342,7 @@ def find_regions_to_delete(view):
 # edit - the Edit object spawned by the deletion command
 #
 # Returns the number of deleted regions.
-def delete_trailing_regions(view, edit):
+def delete_trailing_regions(view: sublime.View, edit: sublime.Edit) -> int:
     regions = find_regions_to_delete(view)
 
     if regions:
@@ -355,8 +358,11 @@ def delete_trailing_regions(view, edit):
 
 # Public: Toggles the highlighting on or off.
 class ToggleTrailingSpacesCommand(sublime_plugin.WindowCommand):
-    def run(self):
+    def run(self) -> None:
         view = self.window.active_view()
+        if not view:
+            return
+
         if max_size_exceeded(view):
             sublime.status_message("File is too big, trailing spaces handling disabled.")
             return
@@ -366,13 +372,13 @@ class ToggleTrailingSpacesCommand(sublime_plugin.WindowCommand):
         settings.save()
         sublime.status_message('Highlighting of trailing spaces is %s' % state)
 
-    def is_checked(self):
+    def is_checked(self) -> bool:
         return current_highlight_color != ""
 
 
 # Public: Toggles "Modified Lines Only" mode on or off.
 class ToggleTrailingSpacesModifiedLinesOnlyCommand(sublime_plugin.WindowCommand):
-    def run(self):
+    def run(self) -> None:
         was_on = settings.modified_lines_only
         settings.modified_lines_only = not was_on
         settings.save()
@@ -381,22 +387,22 @@ class ToggleTrailingSpacesModifiedLinesOnlyCommand(sublime_plugin.WindowCommand)
                   else "Let's trim trailing spaces only on modified lines"
         sublime.status_message(message)
 
-    def is_checked(self):
+    def is_checked(self) -> bool:
         return settings.modified_lines_only
 
 
 # Public: Matches and highlights trailing spaces on key events, according to the
 # current settings.
 class TrailingSpacesListener(sublime_plugin.EventListener):
-    def on_modified_async(self, view):
+    def on_modified_async(self, view: sublime.View) -> None:
         if settings.enabled:
             match_trailing_spaces(view)
 
-    def on_selection_modified_async(self, view):
+    def on_selection_modified_async(self, view: sublime.View) -> None:
         if settings.enabled:
             match_trailing_spaces(view)
 
-    def on_activated_async(self, view):
+    def on_activated_async(self, view: sublime.View) -> None:
         if settings.modified_lines_only:
             self.freeze_last_version(view)
 
@@ -409,18 +415,18 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
                 active_views[view.id()] = view.visible_region()
                 self.update_on_region_change(view)
 
-    def on_pre_save(self, view):
+    def on_pre_save(self, view: sublime.View) -> None:
         if settings.modified_lines_only:
             self.freeze_last_version(view)
 
         if settings.trim_on_save:
             view.run_command("delete_trailing_spaces")
 
-    def on_close(self, view):
+    def on_close(self, view: sublime.View) -> None:
         # untrack
         active_views.pop(view.id(), None)
 
-    def update_on_region_change(self, view):
+    def update_on_region_change(self, view: sublime.View) -> None:
         # remove views not currently visible
         if not self.is_view_visible(view):
             active_views.pop(view.id(), None)
@@ -441,7 +447,7 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
     # Anyway, let's cache the persisted version of the document's buffer for
     # later use on specific event, so that we always have a decent version of
     # "what's on the disk" to work with.
-    def freeze_last_version(self, view):
+    def freeze_last_version(self, view: sublime.View) -> None:
         global on_disk
 
         file_name = view.file_name()
@@ -451,7 +457,7 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
             encoding = view.encoding()
 
             if encoding == "Undefined":
-                encoding = view.settings().get("default_encoding", "UTF-8")
+                encoding = cast(str, view.settings().get("default_encoding", "UTF-8"))
 
             if encoding == "Hexadecimal":  # not supported?
                 on_disk = None
@@ -463,7 +469,7 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
             with codecs.open(file_name, "r", encoding) as f:
                 on_disk = f.read().splitlines()
 
-    def is_view_visible(self, view):
+    def is_view_visible(self, view: sublime.View) -> bool:
         window = view.window()
         if not window:
             return False
@@ -497,7 +503,7 @@ class TrailingSpacesListener(sublime_plugin.EventListener):
 
 # Public: Deletes the trailing spaces.
 class DeleteTrailingSpacesCommand(sublime_plugin.TextCommand):
-    def run(self, edit):
+    def run(self, edit: sublime.Edit) -> None:
         if max_size_exceeded(self.view):
             sublime.status_message("File is too big, trailing spaces handling disabled.")
             return
@@ -516,7 +522,7 @@ class DeleteTrailingSpacesCommand(sublime_plugin.TextCommand):
 
         sublime.status_message(message)
 
-    def save(self, view):
+    def save(self, view: sublime.View) -> None:
         if view.file_name() is None:
             view.run_command('prompt_save_as')
         else:
